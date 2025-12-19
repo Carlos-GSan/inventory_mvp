@@ -6,6 +6,7 @@
 <h1 style="margin-bottom: 2rem; color: #1e293b;">Dashboard</h1>
 
 <div class="stats-grid">
+    {% if perms.inventory.view_inventoryitem %}
     <div class="stat-card">
         <div class="stat-value">{{ stats.total_items }}</div>
         <div class="stat-label">Total de Productos</div>
@@ -14,16 +15,22 @@
         <div class="stat-value">{{ stats.low_stock_items }}</div>
         <div class="stat-label">Productos Bajo Stock</div>
     </div>
+    {% endif %}
+    {% if perms.inventory.view_purchase %}
     <div class="stat-card">
         <div class="stat-value">{{ stats.total_purchases }}</div>
         <div class="stat-label">Compras del Mes</div>
     </div>
+    {% endif %}
+    {% if perms.inventory.view_requisition %}
     <div class="stat-card">
         <div class="stat-value">{{ stats.total_requisitions }}</div>
         <div class="stat-label">Requisiciones del Mes</div>
     </div>
+    {% endif %}
 </div>
 
+{% if perms.inventory.view_inventoryitem %}
 <div class="card">
     <div class="card-header">Productos con Stock Bajo</div>
     {% if low_stock_items %}
@@ -61,6 +68,7 @@
     <p style="color: #64748b; text-align: center; padding: 2rem;">No hay productos con stock bajo</p>
     {% endif %}
 </div>
+{% endif %}
 
 <div class="card">
     <div class="card-header">Últimas Transacciones</div>

@@ -5,7 +5,9 @@
 {% block content %}
 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
     <h1>Inventario</h1>
+    {% if perms.inventory.add_inventoryitem %}
     <a href="{% url 'inventory_create' %}" class="btn btn-primary">+ Nuevo Producto</a>
+    {% endif %}
 </div>
 
 <div class="card">
@@ -51,8 +53,12 @@
                     {% endif %}
                 </td>
                 <td>
+                    {% if perms.inventory.change_inventoryitem %}
                     <a href="{% url 'inventory_update' item.pk %}" class="btn btn-sm btn-primary">Editar</a>
                     <a href="{% url 'inventory_adjust' item.pk %}" class="btn btn-sm btn-secondary">Ajustar</a>
+                    {% else %}
+                    <span class="badge badge-warning">Solo lectura</span>
+                    {% endif %}
                 </td>
             </tr>
             {% empty %}

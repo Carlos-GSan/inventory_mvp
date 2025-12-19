@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block title %}Sin Permisos - DisiTech{% endblock %}
+
+{% block content %}
+<div class="card" style="text-align: center; padding: 3rem;">
+    <h1 style="color: var(--danger); margin-bottom: 1rem;">⚠️ Acceso Denegado</h1>
+    <p style="font-size: 1.25rem; color: var(--secondary); margin-bottom: 2rem;">
+        No tienes permisos para acceder a esta página.
+    </p>
+    <p style="color: var(--secondary); margin-bottom: 2rem;">
+        Contacta al administrador si crees que deberías tener acceso.
+    </p>
+    <a href="{% url 'dashboard' %}" class="btn btn-primary">Volver al Dashboard</a>
+</div>
+{% endblock %}

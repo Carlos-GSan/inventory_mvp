@@ -5,7 +5,9 @@
 {% block content %}
 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
     <h1>Requisiciones</h1>
+    {% if perms.inventory.add_requisition %}
     <a href="{% url 'requisition_create' %}" class="btn btn-primary">+ Nueva Requisición</a>
+    {% endif %}
 </div>
 
 <div class="card">

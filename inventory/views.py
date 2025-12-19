@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib import messages
+from django.core.exceptions import PermissionDenied
 from django.db.models import Q, Sum, F, Count
 from django.db import transaction
 from django.utils import timezone
@@ -35,24 +36,46 @@ def dashboard(request):
     now = timezone.now()
     first_day_month = now.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
     
-    stats = {
-        'total_items': InventoryItem.objects.filter(active=True).count(),
-        'low_stock_items': InventoryItem.objects.filter(
+    if request.user.is_staff:
+        # Admin ve todas las estadísticas
+        stats = {
+            'total_items': InventoryItem.objects.filter(active=True).count(),
+            'low_stock_items': InventoryItem.objects.filter(
+                active=True,
+                stock__lte=F('min_stock')
+            ).count(),
+            'total_purchases': Purchase.objects.filter(created_at__gte=first_day_month).count(),
+            'total_requisitions': Requisition.objects.filter(created_at__gte=first_day_month).count(),
+        }
+        
+        low_stock_items = InventoryItem.objects.filter(
             active=True,
             stock__lte=F('min_stock')
-        ).count(),
-        'total_purchases': Purchase.objects.filter(created_at__gte=first_day_month).count(),
-        'total_requisitions': Requisition.objects.filter(created_at__gte=first_day_month).count(),
-    }
-    
-    low_stock_items = InventoryItem.objects.filter(
-        active=True,
-        stock__lte=F('min_stock')
-    ).select_related('category').order_by('stock')[:10]
-    
-    recent_transactions = InventoryTxn.objects.select_related(
-        'item', 'supplier', 'purchase', 'requisition'
-    ).order_by('-happened_at')[:10]
+        ).select_related('category').order_by('stock')[:10]
+        
+        recent_transactions = InventoryTxn.objects.select_related(
+            'item', 'supplier', 'purchase', 'requisition'
+        ).order_by('-happened_at')[:10]
+    else:
+        # Usuario normal solo ve sus propias estadísticas
+        stats = {
+            'total_items': 0,
+            'low_stock_items': 0,
+            'total_purchases': 0,
+            'total_requisitions': Requisition.objects.filter(
+                requested_by=request.user,
+                created_at__gte=first_day_month
+            ).count(),
+        }
+        
+        low_stock_items = []
+        
+        # Solo transacciones de sus requisiciones
+        recent_transactions = InventoryTxn.objects.filter(
+            requisition__requested_by=request.user
+        ).select_related(
+            'item', 'supplier', 'purchase', 'requisition'
+        ).order_by('-happened_at')[:10]
     
     context = {
         'stats': stats,
@@ -63,6 +86,7 @@ def dashboard(request):
 
 
 @login_required
+@permission_required('inventory.view_inventoryitem', raise_exception=True)
 def inventory_list(request):
     """Lista de inventario con filtros"""
     items = InventoryItem.objects.filter(active=True).select_related('category')
@@ -89,6 +113,7 @@ def inventory_list(request):
 
 
 @login_required
+@permission_required('inventory.add_inventoryitem', raise_exception=True)
 def inventory_create(request):
     """Crear nuevo producto"""
     if request.method == 'POST':
@@ -118,6 +143,7 @@ def inventory_create(request):
 
 
 @login_required
+@permission_required('inventory.change_inventoryitem', raise_exception=True)
 def inventory_update(request, pk):
     """Actualizar producto existente"""
     item = get_object_or_404(InventoryItem, pk=pk)
@@ -158,6 +184,7 @@ def inventory_update(request, pk):
 
 
 @login_required
+@permission_required('inventory.change_inventoryitem', raise_exception=True)
 def inventory_adjust(request, pk):
     """Ajustar stock de un producto"""
     item = get_object_or_404(InventoryItem, pk=pk)
@@ -190,6 +217,7 @@ def inventory_adjust(request, pk):
 
 
 @login_required
+@permission_required('inventory.view_purchase', raise_exception=True)
 def purchase_list(request):
     """Lista de compras"""
     purchases = Purchase.objects.select_related('supplier').prefetch_related('lines').order_by('-purchased_at')
@@ -203,6 +231,7 @@ def purchase_list(request):
 
 
 @login_required
+@permission_required('inventory.add_purchase', raise_exception=True)
 def purchase_create(request):
     """Crear nueva compra"""
     if request.method == 'POST':
@@ -273,6 +302,7 @@ def purchase_create(request):
 
 
 @login_required
+@permission_required('inventory.view_purchase', raise_exception=True)
 def purchase_detail(request, pk):
     """Detalle de una compra"""
     purchase = get_object_or_404(Purchase, pk=pk)
@@ -292,14 +322,23 @@ def purchase_detail(request, pk):
 
 
 @login_required
+@permission_required('inventory.view_requisition', raise_exception=True)
 def requisition_list(request):
     """Lista de requisiciones"""
-    requisitions = Requisition.objects.select_related('requested_by').order_by('-requested_at')
+    if request.user.is_staff:
+        # Admin ve todas las requisiciones
+        requisitions = Requisition.objects.select_related('requested_by').order_by('-requested_at')
+    else:
+        # Usuario normal solo ve sus propias requisiciones
+        requisitions = Requisition.objects.filter(
+            requested_by=request.user
+        ).select_related('requested_by').order_by('-requested_at')
     context = {'requisitions': requisitions}
     return render(request, 'requisitions/list.html', context)
 
 
 @login_required
+@permission_required('inventory.add_requisition', raise_exception=True)
 def requisition_create(request):
     """Crear nueva requisición"""
     if request.method == 'POST':
@@ -366,8 +405,14 @@ def requisition_create(request):
 
 
 @login_required
+@permission_required('inventory.view_requisition', raise_exception=True)
 def requisition_detail(request, pk):
     """Detalle de una requisición"""
     requisition = get_object_or_404(Requisition, pk=pk)
+    
+    # Usuario no-admin solo puede ver sus propias requisiciones
+    if not request.user.is_staff and requisition.requested_by != request.user:
+        raise PermissionDenied("No tienes permiso para ver esta requisición.")
+    
     context = {'requisition': requisition}
     return render(request, 'requisitions/detail.html', context)

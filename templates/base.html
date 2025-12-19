@@ -391,9 +391,15 @@
         </a>
         <div class="navbar-menu">
             <a href="{% url 'dashboard' %}">Dashboard</a>
+            {% if perms.inventory.view_inventoryitem %}
             <a href="{% url 'inventory_list' %}">Inventario</a>
+            {% endif %}
+            {% if perms.inventory.view_purchase %}
             <a href="{% url 'purchase_list' %}">Compras</a>
+            {% endif %}
+            {% if perms.inventory.view_requisition %}
             <a href="{% url 'requisition_list' %}">Requisiciones</a>
+            {% endif %}
         </div>
         <div class="navbar-user">
             <span>{{ user.username }}</span>

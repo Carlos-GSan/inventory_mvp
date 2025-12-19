@@ -21,6 +21,9 @@ from django.contrib.auth import views as auth_views
 from django.conf import settings
 from django.conf.urls.static import static
 
+# Handler para errores 403 (sin permisos)
+handler403 = 'django.views.defaults.permission_denied'
+
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("", include("inventory.urls")),
