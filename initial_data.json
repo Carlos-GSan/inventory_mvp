@@ -1,0 +1,604 @@
+[
+  {
+    "model": "inventory.category",
+    "pk": 1,
+    "fields": {
+      "name": "láminas"
+    }
+  },
+  {
+    "model": "inventory.category",
+    "pk": 2,
+    "fields": {
+      "name": "angulos, perfiles y tubos"
+    }
+  },
+  {
+    "model": "inventory.category",
+    "pk": 3,
+    "fields": {
+      "name": "tuberia conduit"
+    }
+  },
+  {
+    "model": "inventory.category",
+    "pk": 4,
+    "fields": {
+      "name": "herreria"
+    }
+  },
+  {
+    "model": "inventory.category",
+    "pk": 5,
+    "fields": {
+      "name": "pinturas"
+    }
+  },
+  {
+    "model": "inventory.category",
+    "pk": 6,
+    "fields": {
+      "name": "equipo de seguridad"
+    }
+  },
+  {
+    "model": "inventory.supplier",
+    "pk": 1,
+    "fields": {
+      "name": "Aceros del Norte S.A. de C.V."
+    }
+  },
+  {
+    "model": "inventory.supplier",
+    "pk": 2,
+    "fields": {
+      "name": "Ferretería Industrial Gómez"
+    }
+  },
+  {
+    "model": "inventory.supplier",
+    "pk": 3,
+    "fields": {
+      "name": "Pinturas y Recubrimientos Profesionales"
+    }
+  },
+  {
+    "model": "inventory.supplier",
+    "pk": 4,
+    "fields": {
+      "name": "Seguridad Industrial Mexicana"
+    }
+  },
+  {
+    "model": "inventory.inventoryitem",
+    "pk": 1,
+    "fields": {
+      "sku": "LAM-001",
+      "slug": "lamina-galvanizada-cal-20",
+      "category": 1,
+      "description": "Lámina galvanizada calibre 20, 1.22x2.44m",
+      "stock": 45,
+      "min_stock": 10,
+      "max_stock": 100,
+      "active": true
+    }
+  },
+  {
+    "model": "inventory.inventoryitem",
+    "pk": 2,
+    "fields": {
+      "sku": "LAM-002",
+      "slug": "lamina-acero-negro-cal-18",
+      "category": 1,
+      "description": "Lámina acero negro calibre 18, 1.22x2.44m",
+      "stock": 30,
+      "min_stock": 8,
+      "max_stock": 80,
+      "active": true
+    }
+  },
+  {
+    "model": "inventory.inventoryitem",
+    "pk": 3,
+    "fields": {
+      "sku": "ANG-001",
+      "slug": "angulo-estructural-2x2",
+      "category": 2,
+      "description": "Ángulo estructural 2\" x 2\" x 1/4\", 6m",
+      "stock": 120,
+      "min_stock": 30,
+      "max_stock": 200,
+      "active": true
+    }
+  },
+  {
+    "model": "inventory.inventoryitem",
+    "pk": 4,
+    "fields": {
+      "sku": "TUB-001",
+      "slug": "tubo-cuadrado-2x2",
+      "category": 2,
+      "description": "Tubo estructural cuadrado 2\" x 2\" cal 14, 6m",
+      "stock": 85,
+      "min_stock": 25,
+      "max_stock": 150,
+      "active": true
+    }
+  },
+  {
+    "model": "inventory.inventoryitem",
+    "pk": 5,
+    "fields": {
+      "sku": "CON-001",
+      "slug": "conduit-pared-delgada-1-2",
+      "category": 3,
+      "description": "Tubería conduit pared delgada 1/2\", 3m",
+      "stock": 200,
+      "min_stock": 50,
+      "max_stock": 400,
+      "active": true
+    }
+  },
+  {
+    "model": "inventory.inventoryitem",
+    "pk": 6,
+    "fields": {
+      "sku": "CON-002",
+      "slug": "conduit-pared-gruesa-3-4",
+      "category": 3,
+      "description": "Tubería conduit pared gruesa 3/4\", 3m",
+      "stock": 150,
+      "min_stock": 40,
+      "max_stock": 300,
+      "active": true
+    }
+  },
+  {
+    "model": "inventory.inventoryitem",
+    "pk": 7,
+    "fields": {
+      "sku": "HER-001",
+      "slug": "soldadura-e6011-1-8",
+      "category": 4,
+      "description": "Electrodo para soldadura E6011 1/8\", caja 5kg",
+      "stock": 25,
+      "min_stock": 10,
+      "max_stock": 50,
+      "active": true
+    }
+  },
+  {
+    "model": "inventory.inventoryitem",
+    "pk": 8,
+    "fields": {
+      "sku": "HER-002",
+      "slug": "disco-corte-metal-14",
+      "category": 4,
+      "description": "Disco de corte para metal 14\", espesor 1/8\"",
+      "stock": 60,
+      "min_stock": 15,
+      "max_stock": 100,
+      "active": true
+    }
+  },
+  {
+    "model": "inventory.inventoryitem",
+    "pk": 9,
+    "fields": {
+      "sku": "PIN-001",
+      "slug": "pintura-anticorrosiva-rojo-oxido",
+      "category": 5,
+      "description": "Pintura anticorrosiva rojo óxido, cubeta 19L",
+      "stock": 18,
+      "min_stock": 5,
+      "max_stock": 40,
+      "active": true
+    }
+  },
+  {
+    "model": "inventory.inventoryitem",
+    "pk": 10,
+    "fields": {
+      "sku": "PIN-002",
+      "slug": "thinner-estandar",
+      "category": 5,
+      "description": "Thinner estándar, cubeta 19L",
+      "stock": 12,
+      "min_stock": 8,
+      "max_stock": 30,
+      "active": true
+    }
+  },
+  {
+    "model": "inventory.inventoryitem",
+    "pk": 11,
+    "fields": {
+      "sku": "SEG-001",
+      "slug": "casco-seguridad-blanco",
+      "category": 6,
+      "description": "Casco de seguridad industrial color blanco",
+      "stock": 35,
+      "min_stock": 15,
+      "max_stock": 60,
+      "active": true
+    }
+  },
+  {
+    "model": "inventory.inventoryitem",
+    "pk": 12,
+    "fields": {
+      "sku": "SEG-002",
+      "slug": "guantes-carnaza-tipo-a",
+      "category": 6,
+      "description": "Guantes de carnaza tipo A, par",
+      "stock": 120,
+      "min_stock": 40,
+      "max_stock": 200,
+      "active": true
+    }
+  },
+  {
+    "model": "inventory.inventoryitem",
+    "pk": 13,
+    "fields": {
+      "sku": "SEG-003",
+      "slug": "lentes-seguridad-claro",
+      "category": 6,
+      "description": "Lentes de seguridad claro antiempañante",
+      "stock": 80,
+      "min_stock": 30,
+      "max_stock": 150,
+      "active": true
+    }
+  },
+  {
+    "model": "inventory.purchase",
+    "pk": 1,
+    "fields": {
+      "supplier": 1,
+      "purchased_at": "2025-12-01",
+      "ref": "FAC-2025-1234",
+      "created_at": "2025-12-01T10:30:00Z"
+    }
+  },
+  {
+    "model": "inventory.purchase",
+    "pk": 2,
+    "fields": {
+      "supplier": 2,
+      "purchased_at": "2025-12-05",
+      "ref": "FAC-2025-5678",
+      "created_at": "2025-12-05T14:15:00Z"
+    }
+  },
+  {
+    "model": "inventory.purchase",
+    "pk": 3,
+    "fields": {
+      "supplier": 3,
+      "purchased_at": "2025-12-10",
+      "ref": "FAC-2025-9012",
+      "created_at": "2025-12-10T09:00:00Z"
+    }
+  },
+  {
+    "model": "inventory.purchaseline",
+    "pk": 1,
+    "fields": {
+      "purchase": 1,
+      "item": 1,
+      "qty": 50,
+      "unit_price": "450.50"
+    }
+  },
+  {
+    "model": "inventory.purchaseline",
+    "pk": 2,
+    "fields": {
+      "purchase": 1,
+      "item": 2,
+      "qty": 30,
+      "unit_price": "520.00"
+    }
+  },
+  {
+    "model": "inventory.purchaseline",
+    "pk": 3,
+    "fields": {
+      "purchase": 1,
+      "item": 3,
+      "qty": 100,
+      "unit_price": "185.75"
+    }
+  },
+  {
+    "model": "inventory.purchaseline",
+    "pk": 4,
+    "fields": {
+      "purchase": 2,
+      "item": 5,
+      "qty": 200,
+      "unit_price": "45.50"
+    }
+  },
+  {
+    "model": "inventory.purchaseline",
+    "pk": 5,
+    "fields": {
+      "purchase": 2,
+      "item": 6,
+      "qty": 150,
+      "unit_price": "62.80"
+    }
+  },
+  {
+    "model": "inventory.purchaseline",
+    "pk": 6,
+    "fields": {
+      "purchase": 2,
+      "item": 7,
+      "qty": 30,
+      "unit_price": "380.00"
+    }
+  },
+  {
+    "model": "inventory.purchaseline",
+    "pk": 7,
+    "fields": {
+      "purchase": 3,
+      "item": 9,
+      "qty": 20,
+      "unit_price": "850.00"
+    }
+  },
+  {
+    "model": "inventory.purchaseline",
+    "pk": 8,
+    "fields": {
+      "purchase": 3,
+      "item": 10,
+      "qty": 15,
+      "unit_price": "420.00"
+    }
+  },
+  {
+    "model": "inventory.inventorytxn",
+    "pk": 1,
+    "fields": {
+      "item": 1,
+      "txn_type": "PURCHASE",
+      "qty": 50,
+      "unit_price": "450.50",
+      "supplier": 1,
+      "purchase": 1,
+      "requisition": null,
+      "happened_at": "2025-12-01T10:30:00Z",
+      "note": "Compra inicial de láminas",
+      "created_at": "2025-12-01T10:30:00Z"
+    }
+  },
+  {
+    "model": "inventory.inventorytxn",
+    "pk": 2,
+    "fields": {
+      "item": 2,
+      "txn_type": "PURCHASE",
+      "qty": 30,
+      "unit_price": "520.00",
+      "supplier": 1,
+      "purchase": 1,
+      "requisition": null,
+      "happened_at": "2025-12-01T10:30:00Z",
+      "note": "Compra inicial de láminas",
+      "created_at": "2025-12-01T10:30:00Z"
+    }
+  },
+  {
+    "model": "inventory.inventorytxn",
+    "pk": 3,
+    "fields": {
+      "item": 3,
+      "txn_type": "PURCHASE",
+      "qty": 100,
+      "unit_price": "185.75",
+      "supplier": 1,
+      "purchase": 1,
+      "requisition": null,
+      "happened_at": "2025-12-01T10:30:00Z",
+      "note": "Compra de ángulos estructurales",
+      "created_at": "2025-12-01T10:30:00Z"
+    }
+  },
+  {
+    "model": "inventory.inventorytxn",
+    "pk": 4,
+    "fields": {
+      "item": 5,
+      "txn_type": "PURCHASE",
+      "qty": 200,
+      "unit_price": "45.50",
+      "supplier": 2,
+      "purchase": 2,
+      "requisition": null,
+      "happened_at": "2025-12-05T14:15:00Z",
+      "note": "Reabastecimiento tubería conduit",
+      "created_at": "2025-12-05T14:15:00Z"
+    }
+  },
+  {
+    "model": "inventory.inventorytxn",
+    "pk": 5,
+    "fields": {
+      "item": 6,
+      "txn_type": "PURCHASE",
+      "qty": 150,
+      "unit_price": "62.80",
+      "supplier": 2,
+      "purchase": 2,
+      "requisition": null,
+      "happened_at": "2025-12-05T14:15:00Z",
+      "note": "Reabastecimiento tubería conduit",
+      "created_at": "2025-12-05T14:15:00Z"
+    }
+  },
+  {
+    "model": "inventory.inventorytxn",
+    "pk": 6,
+    "fields": {
+      "item": 7,
+      "txn_type": "PURCHASE",
+      "qty": 30,
+      "unit_price": "380.00",
+      "supplier": 2,
+      "purchase": 2,
+      "requisition": null,
+      "happened_at": "2025-12-05T14:15:00Z",
+      "note": "Compra de soldadura",
+      "created_at": "2025-12-05T14:15:00Z"
+    }
+  },
+  {
+    "model": "inventory.inventorytxn",
+    "pk": 7,
+    "fields": {
+      "item": 9,
+      "txn_type": "PURCHASE",
+      "qty": 20,
+      "unit_price": "850.00",
+      "supplier": 3,
+      "purchase": 3,
+      "requisition": null,
+      "happened_at": "2025-12-10T09:00:00Z",
+      "note": "Compra pintura anticorrosiva",
+      "created_at": "2025-12-10T09:00:00Z"
+    }
+  },
+  {
+    "model": "inventory.inventorytxn",
+    "pk": 8,
+    "fields": {
+      "item": 10,
+      "txn_type": "PURCHASE",
+      "qty": 15,
+      "unit_price": "420.00",
+      "supplier": 3,
+      "purchase": 3,
+      "requisition": null,
+      "happened_at": "2025-12-10T09:00:00Z",
+      "note": "Compra de thinner",
+      "created_at": "2025-12-10T09:00:00Z"
+    }
+  },
+  {
+    "model": "inventory.inventorytxn",
+    "pk": 9,
+    "fields": {
+      "item": 1,
+      "txn_type": "ISSUE",
+      "qty": -5,
+      "unit_price": null,
+      "supplier": null,
+      "purchase": null,
+      "requisition": null,
+      "happened_at": "2025-12-12T08:00:00Z",
+      "note": "Salida para proyecto obra civil",
+      "created_at": "2025-12-12T08:00:00Z"
+    }
+  },
+  {
+    "model": "inventory.inventorytxn",
+    "pk": 10,
+    "fields": {
+      "item": 3,
+      "txn_type": "ISSUE",
+      "qty": -20,
+      "unit_price": null,
+      "supplier": null,
+      "purchase": null,
+      "requisition": null,
+      "happened_at": "2025-12-13T09:30:00Z",
+      "note": "Salida para estructura metálica",
+      "created_at": "2025-12-13T09:30:00Z"
+    }
+  },
+  {
+    "model": "inventory.inventorytxn",
+    "pk": 11,
+    "fields": {
+      "item": 11,
+      "txn_type": "ADJUST",
+      "qty": 35,
+      "unit_price": "125.00",
+      "supplier": 4,
+      "purchase": null,
+      "requisition": null,
+      "happened_at": "2025-12-15T10:00:00Z",
+      "note": "Ajuste inventario inicial equipo de seguridad",
+      "created_at": "2025-12-15T10:00:00Z"
+    }
+  },
+  {
+    "model": "inventory.inventorytxn",
+    "pk": 12,
+    "fields": {
+      "item": 12,
+      "txn_type": "ADJUST",
+      "qty": 120,
+      "unit_price": "35.50",
+      "supplier": 4,
+      "purchase": null,
+      "requisition": null,
+      "happened_at": "2025-12-15T10:00:00Z",
+      "note": "Ajuste inventario inicial equipo de seguridad",
+      "created_at": "2025-12-15T10:00:00Z"
+    }
+  },
+  {
+    "model": "inventory.inventorytxn",
+    "pk": 13,
+    "fields": {
+      "item": 13,
+      "txn_type": "ADJUST",
+      "qty": 80,
+      "unit_price": "45.00",
+      "supplier": 4,
+      "purchase": null,
+      "requisition": null,
+      "happened_at": "2025-12-15T10:00:00Z",
+      "note": "Ajuste inventario inicial equipo de seguridad",
+      "created_at": "2025-12-15T10:00:00Z"
+    }
+  },
+  {
+    "model": "inventory.inventorytxn",
+    "pk": 14,
+    "fields": {
+      "item": 4,
+      "txn_type": "ADJUST",
+      "qty": 85,
+      "unit_price": "220.00",
+      "supplier": 1,
+      "purchase": null,
+      "requisition": null,
+      "happened_at": "2025-12-16T11:00:00Z",
+      "note": "Ajuste inventario inicial tubos",
+      "created_at": "2025-12-16T11:00:00Z"
+    }
+  },
+  {
+    "model": "inventory.inventorytxn",
+    "pk": 15,
+    "fields": {
+      "item": 8,
+      "txn_type": "ADJUST",
+      "qty": 60,
+      "unit_price": "28.50",
+      "supplier": 2,
+      "purchase": null,
+      "requisition": null,
+      "happened_at": "2025-12-16T11:00:00Z",
+      "note": "Ajuste inventario inicial discos de corte",
+      "created_at": "2025-12-16T11:00:00Z"
+    }
+  }
+]
