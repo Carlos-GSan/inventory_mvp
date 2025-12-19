@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+
+{% block title %}Inventario - DisiTech{% endblock %}
+
+{% block content %}
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+    <h1>Inventario</h1>
+    <a href="{% url 'inventory_create' %}" class="btn btn-primary">+ Nuevo Producto</a>
+</div>
+
+<div class="card">
+    <form method="get" style="display: flex; gap: 1rem; margin-bottom: 1rem;">
+        <input type="text" name="search" class="form-control" placeholder="Buscar por SKU o descripción..." value="{{ request.GET.search }}">
+        <select name="category" class="form-control" style="max-width: 200px;">
+            <option value="">Todas las categorías</option>
+            {% for cat in categories %}
+            <option value="{{ cat.id }}" {% if request.GET.category == cat.id|stringformat:"s" %}selected{% endif %}>{{ cat.name }}</option>
+            {% endfor %}
+        </select>
+        <button type="submit" class="btn btn-primary">Filtrar</button>
+        <a href="{% url 'inventory_list' %}" class="btn btn-secondary">Limpiar</a>
+    </form>
+
+    <table>
+        <thead>
+            <tr>
+                <th>SKU</th>
+                <th>Descripción</th>
+                <th>Categoría</th>
+                <th>Stock</th>
+                <th>Mín/Máx</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in items %}
+            <tr>
+                <td><strong>{{ item.sku }}</strong></td>
+                <td>{{ item.description }}</td>
+                <td>{{ item.category.name }}</td>
+                <td><strong>{{ item.stock }}</strong></td>
+                <td>{{ item.min_stock }} / {{ item.max_stock }}</td>
+                <td>
+                    {% if item.stock == 0 %}
+                    <span class="badge badge-danger">Sin Stock</span>
+                    {% elif item.stock <= item.min_stock %}
+                    <span class="badge badge-warning">Stock Bajo</span>
+                    {% else %}
+                    <span class="badge badge-success">OK</span>
+                    {% endif %}
+                </td>
+                <td>
+                    <a href="{% url 'inventory_update' item.pk %}" class="btn btn-sm btn-primary">Editar</a>
+                    <a href="{% url 'inventory_adjust' item.pk %}" class="btn btn-sm btn-secondary">Ajustar</a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="7" style="text-align: center; padding: 2rem; color: #64748b;">No se encontraron productos</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

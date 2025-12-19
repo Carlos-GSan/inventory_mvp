@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+
+{% block title %}Detalle de Requisición - DisiTech{% endblock %}
+
+{% block content %}
+<div style="max-width: 900px; margin: 0 auto;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+        <h1>Requisición #{{ requisition.id }}</h1>
+        <a href="{% url 'requisition_list' %}" class="btn btn-secondary">Volver</a>
+    </div>
+
+    <div class="card">
+        <div class="card-header">Información General</div>
+        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem;">
+            <div>
+                <label style="color: #64748b; font-size: 0.875rem;">Solicitante</label>
+                <p style="font-weight: 600;">{{ requisition.requested_by.username }}</p>
+            </div>
+            <div>
+                <label style="color: #64748b; font-size: 0.875rem;">Fecha de Solicitud</label>
+                <p style="font-weight: 600;">{{ requisition.requested_at|date:"d/m/Y" }}</p>
+            </div>
+            <div style="grid-column: 1 / -1;">
+                <label style="color: #64748b; font-size: 0.875rem;">Nota</label>
+                <p style="font-weight: 600;">{{ requisition.note|default:"-" }}</p>
+            </div>
+            <div>
+                <label style="color: #64748b; font-size: 0.875rem;">Fecha de Registro</label>
+                <p style="font-weight: 600;">{{ requisition.created_at|date:"d/m/Y H:i" }}</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">Productos Solicitados</div>
+        <table>
+            <thead>
+                <tr>
+                    <th>SKU</th>
+                    <th>Descripción</th>
+                    <th>Cantidad Solicitada</th>
+                    <th>Stock Actual</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for line in requisition.lines.all %}
+                <tr>
+                    <td><strong>{{ line.item.sku }}</strong></td>
+                    <td>{{ line.item.description }}</td>
+                    <td>{{ line.qty }}</td>
+                    <td>{{ line.item.stock }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

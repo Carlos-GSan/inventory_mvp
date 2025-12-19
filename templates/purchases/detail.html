@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+
+{% block title %}Detalle de Compra - DisiTech{% endblock %}
+
+{% block content %}
+<div style="max-width: 900px; margin: 0 auto;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+        <h1>Compra #{{ purchase.id }}</h1>
+        <a href="{% url 'purchase_list' %}" class="btn btn-secondary">Volver</a>
+    </div>
+
+    <div class="card">
+        <div class="card-header">Información General</div>
+        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem;">
+            <div>
+                <label style="color: #64748b; font-size: 0.875rem;">Proveedor</label>
+                <p style="font-weight: 600;">{{ purchase.supplier.name }}</p>
+            </div>
+            <div>
+                <label style="color: #64748b; font-size: 0.875rem;">Fecha de Compra</label>
+                <p style="font-weight: 600;">{{ purchase.purchased_at|date:"d/m/Y" }}</p>
+            </div>
+            <div>
+                <label style="color: #64748b; font-size: 0.875rem;">Referencia</label>
+                <p style="font-weight: 600;">{{ purchase.ref|default:"-" }}</p>
+            </div>
+            <div>
+                <label style="color: #64748b; font-size: 0.875rem;">Fecha de Registro</label>
+                <p style="font-weight: 600;">{{ purchase.created_at|date:"d/m/Y H:i" }}</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">Líneas de Compra</div>
+        <table>
+            <thead>
+                <tr>
+                    <th>SKU</th>
+                    <th>Descripción</th>
+                    <th>Cantidad</th>
+                    <th>Precio Unit.</th>
+                    <th>Subtotal</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for line in purchase.lines_with_subtotal %}
+                <tr>
+                    <td><strong>{{ line.item.sku }}</strong></td>
+                    <td>{{ line.item.description }}</td>
+                    <td>{{ line.qty }}</td>
+                    <td>${{ line.unit_price|floatformat:2 }}</td>
+                    <td><strong>${{ line.subtotal|floatformat:2 }}</strong></td>
+                </tr>
+                {% endfor %}
+                <tr style="background: #f8fafc; font-weight: 700;">
+                    <td colspan="4" style="text-align: right;">Total:</td>
+                    <td>${{ purchase.total|floatformat:2 }}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

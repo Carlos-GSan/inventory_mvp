@@ -1,0 +1,135 @@
+{% extends 'base.html' %}
+
+{% block title %}Nueva Requisición - DisiTech{% endblock %}
+
+{% block content %}
+<div style="max-width: 900px; margin: 0 auto;">
+    <h1 style="margin-bottom: 2rem;">Nueva Requisición</h1>
+
+    <form method="post" id="requisitionForm">
+        {% csrf_token %}
+        
+        <div class="card">
+            <div class="card-header">Información General</div>
+            
+            <div class="form-group">
+                <label for="requested_at" class="form-label">Fecha de Solicitud *</label>
+                <input type="date" id="requested_at" name="requested_at" class="form-control" required>
+            </div>
+
+            <div class="form-group">
+                <label for="note" class="form-label">Nota</label>
+                <textarea id="note" name="note" class="form-control" rows="3"></textarea>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">Productos Solicitados</div>
+            
+            <div id="requisitionLines">
+                <div class="requisition-line" style="display: grid; grid-template-columns: 3fr 1fr auto; gap: 1rem; margin-bottom: 1rem; padding: 1rem; background: #f8fafc; border-radius: 0.375rem;">
+                    <div class="form-group" style="margin: 0;">
+                        <label class="form-label">Producto *</label>
+                        <select name="lines[0][item]" class="form-control item-select" required>
+                            <option value="">Seleccione un producto</option>
+                            {% for item in items %}
+                            <option value="{{ item.id }}" data-stock="{{ item.stock }}">{{ item.sku }} - {{ item.description }} (Stock: {{ item.stock }})</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group" style="margin: 0;">
+                        <label class="form-label">Cantidad *</label>
+                        <input type="number" name="lines[0][qty]" class="form-control qty-input" min="1" required>
+                    </div>
+                    <div style="display: flex; align-items: flex-end;">
+                        <button type="button" class="btn btn-danger btn-sm remove-line" style="visibility: hidden;">-</button>
+                    </div>
+                </div>
+            </div>
+
+            <button type="button" id="addLine" class="btn btn-secondary">+ Agregar Producto</button>
+        </div>
+
+        <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+            <button type="submit" class="btn btn-success">Crear Requisición</button>
+            <a href="{% url 'requisition_list' %}" class="btn btn-secondary">Cancelar</a>
+        </div>
+    </form>
+</div>
+
+<script>
+let lineIndex = 1;
+
+document.getElementById('addLine').addEventListener('click', function() {
+    const container = document.getElementById('requisitionLines');
+    const newLine = document.createElement('div');
+    newLine.className = 'requisition-line';
+    newLine.style = 'display: grid; grid-template-columns: 3fr 1fr auto; gap: 1rem; margin-bottom: 1rem; padding: 1rem; background: #f8fafc; border-radius: 0.375rem;';
+    newLine.innerHTML = `
+        <div class="form-group" style="margin: 0;">
+            <label class="form-label">Producto *</label>
+            <select name="lines[${lineIndex}][item]" class="form-control item-select" required>
+                <option value="">Seleccione un producto</option>
+                {% for item in items %}
+                <option value="{{ item.id }}" data-stock="{{ item.stock }}">{{ item.sku }} - {{ item.description }} (Stock: {{ item.stock }})</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="form-group" style="margin: 0;">
+            <label class="form-label">Cantidad *</label>
+            <input type="number" name="lines[${lineIndex}][qty]" class="form-control qty-input" min="1" required>
+        </div>
+        <div style="display: flex; align-items: flex-end;">
+            <button type="button" class="btn btn-danger btn-sm remove-line">-</button>
+        </div>
+    `;
+    container.appendChild(newLine);
+    lineIndex++;
+    updateRemoveButtons();
+});
+
+document.getElementById('requisitionLines').addEventListener('click', function(e) {
+    if (e.target.classList.contains('remove-line')) {
+        e.target.closest('.requisition-line').remove();
+        updateRemoveButtons();
+    }
+});
+
+function updateRemoveButtons() {
+    const lines = document.querySelectorAll('.requisition-line');
+    lines.forEach((line, index) => {
+        const btn = line.querySelector('.remove-line');
+        if (lines.length === 1) {
+            btn.style.visibility = 'hidden';
+        } else {
+            btn.style.visibility = 'visible';
+        }
+    });
+}
+
+// Set today as default date
+document.getElementById('requested_at').valueAsDate = new Date();
+
+// Validation for stock availability
+document.getElementById('requisitionForm').addEventListener('submit', function(e) {
+    const selects = document.querySelectorAll('.item-select');
+    const inputs = document.querySelectorAll('.qty-input');
+    let hasError = false;
+    
+    selects.forEach((select, index) => {
+        const selectedOption = select.options[select.selectedIndex];
+        const stock = parseInt(selectedOption.dataset.stock || 0);
+        const qty = parseInt(inputs[index].value || 0);
+        
+        if (qty > stock) {
+            hasError = true;
+            alert(`La cantidad solicitada para ${selectedOption.text} excede el stock disponible (${stock})`);
+        }
+    });
+    
+    if (hasError) {
+        e.preventDefault();
+    }
+});
+</script>
+{% endblock %}

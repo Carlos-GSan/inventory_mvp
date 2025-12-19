@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block title %}Requisiciones - DisiTech{% endblock %}
+
+{% block content %}
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+    <h1>Requisiciones</h1>
+    <a href="{% url 'requisition_create' %}" class="btn btn-primary">+ Nueva Requisición</a>
+</div>
+
+<div class="card">
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Solicitante</th>
+                <th>Fecha de Solicitud</th>
+                <th>Nota</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for req in requisitions %}
+            <tr>
+                <td><strong>#{{ req.id }}</strong></td>
+                <td>{{ req.requested_by.username }}</td>
+                <td>{{ req.requested_at|date:"d/m/Y" }}</td>
+                <td>{{ req.note|default:"-" }}</td>
+                <td>
+                    <a href="{% url 'requisition_detail' req.pk %}" class="btn btn-sm btn-primary">Ver Detalle</a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="5" style="text-align: center; padding: 2rem; color: #64748b;">No hay requisiciones registradas</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

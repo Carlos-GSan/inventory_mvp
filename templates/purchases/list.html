@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block title %}Compras - DisiTech{% endblock %}
+
+{% block content %}
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+    <h1>Compras</h1>
+    <a href="{% url 'purchase_create' %}" class="btn btn-primary">+ Nueva Compra</a>
+</div>
+
+<div class="card">
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Proveedor</th>
+                <th>Fecha de Compra</th>
+                <th>Referencia</th>
+                <th>Total</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for purchase in purchases %}
+            <tr>
+                <td><strong>#{{ purchase.id }}</strong></td>
+                <td>{{ purchase.supplier.name }}</td>
+                <td>{{ purchase.purchased_at|date:"d/m/Y" }}</td>
+                <td>{{ purchase.ref|default:"-" }}</td>
+                <td>${{ purchase.total|floatformat:2 }}</td>
+                <td>
+                    <a href="{% url 'purchase_detail' purchase.pk %}" class="btn btn-sm btn-primary">Ver Detalle</a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="6" style="text-align: center; padding: 2rem; color: #64748b;">No hay compras registradas</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

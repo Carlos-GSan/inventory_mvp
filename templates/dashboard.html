@@ -1,0 +1,102 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard - DisiTech{% endblock %}
+
+{% block content %}
+<h1 style="margin-bottom: 2rem; color: #1e293b;">Dashboard</h1>
+
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-value">{{ stats.total_items }}</div>
+        <div class="stat-label">Total de Productos</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-value">{{ stats.low_stock_items }}</div>
+        <div class="stat-label">Productos Bajo Stock</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-value">{{ stats.total_purchases }}</div>
+        <div class="stat-label">Compras del Mes</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-value">{{ stats.total_requisitions }}</div>
+        <div class="stat-label">Requisiciones del Mes</div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">Productos con Stock Bajo</div>
+    {% if low_stock_items %}
+    <table>
+        <thead>
+            <tr>
+                <th>SKU</th>
+                <th>Descripción</th>
+                <th>Categoría</th>
+                <th>Stock Actual</th>
+                <th>Stock Mínimo</th>
+                <th>Estado</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in low_stock_items %}
+            <tr>
+                <td><strong>{{ item.sku }}</strong></td>
+                <td>{{ item.description }}</td>
+                <td>{{ item.category.name }}</td>
+                <td>{{ item.stock }}</td>
+                <td>{{ item.min_stock }}</td>
+                <td>
+                    {% if item.stock == 0 %}
+                    <span class="badge badge-danger">Sin Stock</span>
+                    {% else %}
+                    <span class="badge badge-warning">Stock Bajo</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p style="color: #64748b; text-align: center; padding: 2rem;">No hay productos con stock bajo</p>
+    {% endif %}
+</div>
+
+<div class="card">
+    <div class="card-header">Últimas Transacciones</div>
+    {% if recent_transactions %}
+    <table>
+        <thead>
+            <tr>
+                <th>Fecha</th>
+                <th>Tipo</th>
+                <th>Producto</th>
+                <th>Cantidad</th>
+                <th>Nota</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for txn in recent_transactions %}
+            <tr>
+                <td>{{ txn.happened_at|date:"d/m/Y H:i" }}</td>
+                <td>
+                    {% if txn.txn_type == "PURCHASE" %}
+                    <span class="badge badge-success">Compra</span>
+                    {% elif txn.txn_type == "ISSUE" %}
+                    <span class="badge badge-warning">Salida</span>
+                    {% else %}
+                    <span class="badge">Ajuste</span>
+                    {% endif %}
+                </td>
+                <td>{{ item.sku }} - {{ txn.item.description }}</td>
+                <td>{{ txn.qty }}</td>
+                <td>{{ txn.note|default:"-" }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p style="color: #64748b; text-align: center; padding: 2rem;">No hay transacciones recientes</p>
+    {% endif %}
+</div>
+{% endblock %}
