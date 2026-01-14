@@ -9,36 +9,50 @@ https://docs.djangoproject.com/en/6.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/6.0/ref/settings/
 """
-
+import os
 from pathlib import Path
+from environ import Env
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# Load environment variables
+env = Env()
+Env.read_env(os.path.join(BASE_DIR, ".env"))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-@f0!r#a5d&fd5!70cio(mm7o2drp==y@h&u-g96e6*6+zho&ju"
+SECRET_KEY = env("SECRET_KEY", default="django-insecure-please-change-me")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = env.bool("DEBUG", default=True)
 
 ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
 
-INSTALLED_APPS = [
+DJANGO_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "inventory"
 ]
+
+THIRD_PARTY_APPS = [
+    "phonenumber_field"
+]
+
+LOCAL_APPS = [
+    "apps.inventory",
+    "apps.profiles",
+]
+
+INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -62,7 +76,7 @@ TEMPLATES = [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
-                "inventory.context_processors.logo_context",
+                "apps.inventory.context_processors.logo_context",
             ],
         },
     },
@@ -128,3 +142,15 @@ MEDIA_ROOT = BASE_DIR / "media"
 LOGIN_URL = "login"
 LOGIN_REDIRECT_URL = "dashboard"
 LOGOUT_REDIRECT_URL = "login"
+
+SITE_URL = 'http://localhost:8000'  # Cambiar en producción
+EMAIL_BACKEND= os.getenv("EMAIL_BACKEND","django.core.mail.backends.smtp.EmailBackend")
+EMAIL_HOST = os.getenv("EMAIL_HOST","")
+EMAIL_PORT = int(os.getenv("EMAIL_PORT","465"))
+EMAIL_HOST_USER=os.getenv("EMAIL_HOST_USER","")
+EMAIL_HOST_PASSWORD=os.getenv("EMAIL_HOST_PASSWORD", "")
+EMAIL_USE_TLS = os.getenv("EMAIL_USE_TLS", "true").lower() == "true"
+EMAIL_USE_SSL = os.getenv("EMAIL_USE_SSL", "false").lower() == "true"
+DEFAULT_FROM_EMAIL = os.getenv("DEFAULT_FROM_EMAIL","no-reply@gmail.com")
+SUPPORT_INBOX = os.getenv("SUPPORT_INBOX", "soporte@gmail.com")
+EMAIL_TIMEOUT = 20

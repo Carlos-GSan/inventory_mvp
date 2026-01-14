@@ -9,3 +9,6 @@ exceles_base/
 
 # Virtual environments
 .venv
+
+# environment variables
+.env

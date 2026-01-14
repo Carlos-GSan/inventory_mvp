@@ -26,9 +26,10 @@ handler403 = 'django.views.defaults.permission_denied'
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("", include("inventory.urls")),
+    path("", include("apps.inventory.urls")),
     path("login/", auth_views.LoginView.as_view(template_name="login.html"), name="login"),
     path("logout/", auth_views.LogoutView.as_view(), name="logout"),
+    path("profiles/", include("apps.profiles.urls")),
 ]
 
 if settings.DEBUG:

@@ -8,7 +8,7 @@ from django.utils import timezone
 from datetime import datetime, timedelta
 import re
 from .models.inventory import Category, InventoryItem
-from .models.compras import Supplier, Purchase, PurchaseLine
+from .models.purchases import Supplier, Purchase, PurchaseLine
 from .models.transactions import Requisition, RequisitionLine, InventoryTxn
 
 

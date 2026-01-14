@@ -1,0 +1,62 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css/login.css' %}">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <title>Activar Cuenta - DisiTech</title>
+</head>
+<body>
+    <div class="login-container">
+        <div class="logo-container">
+            <div style="width: 120px; height: 120px; margin: 0 auto; background: linear-gradient(135deg, #1a1a1a 0%, #0a0a0a 100%); border-radius: 0.5rem; display: flex; align-items: center; justify-content: center; font-size: 2.5rem; color: #cd7f32; font-weight: 700; border: 3px solid #b91c1c; box-shadow: 0 4px 15px rgba(0,0,0,0.3);">DT</div>
+        </div>
+
+        <h1 class="login-title">Activar Cuenta</h1>
+        <p class="login-subtitle">Bienvenido, {{ employee.first_name }}</p>
+
+        {% if messages %}
+            <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    {% for message in messages %}
+                    Swal.fire({
+                        icon: '{{ message.tags }}' === 'error' ? 'error' : 'success',
+                        title: '{{ message.tags|title }}',
+                        text: '{{ message }}',
+                        confirmButtonColor: '#b91c1c'
+                    });
+                    {% endfor %}
+                });
+            </script>
+        {% endif %}
+
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="username" class="form-label">Nombre de Usuario</label>
+                <input type="text" id="username" name="username" class="form-control" required autofocus>
+                <small style="color: #666; font-size: 0.85rem;">Elige un nombre de usuario único</small>
+            </div>
+            
+            <div class="form-group">
+                <label for="password" class="form-label">Contraseña</label>
+                <input type="password" id="password" name="password" class="form-control" required minlength="8">
+                <small style="color: #666; font-size: 0.85rem;">Mínimo 8 caracteres</small>
+            </div>
+            
+            <div class="form-group">
+                <label for="password_confirm" class="form-label">Confirmar Contraseña</label>
+                <input type="password" id="password_confirm" name="password_confirm" class="form-control" required minlength="8">
+            </div>
+            
+            <button type="submit" class="btn-login">Activar Cuenta</button>
+        </form>
+
+        <div class="form-footer">
+            © 2025 DisiTech - Servicios Industriales de Ingeniería
+        </div>
+    </div>
+</body>
+</html>

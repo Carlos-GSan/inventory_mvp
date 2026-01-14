@@ -2,7 +2,7 @@ from django.db import models
 from django.conf import settings
 from django.core.validators import MinValueValidator
 from .inventory import InventoryItem
-from .compras import Supplier, Purchase
+from .purchases import Supplier, Purchase
 
 from django.conf import settings
 
