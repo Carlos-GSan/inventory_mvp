@@ -143,7 +143,7 @@ LOGIN_URL = "login"
 LOGIN_REDIRECT_URL = "dashboard"
 LOGOUT_REDIRECT_URL = "login"
 
-SITE_URL = 'http://localhost:8000'  # Cambiar en producción
+SITE_URL = os.getenv("SITE_URL", "http://localhost:8000")  # Cambiar en producción
 EMAIL_BACKEND= os.getenv("EMAIL_BACKEND","django.core.mail.backends.smtp.EmailBackend")
 EMAIL_HOST = os.getenv("EMAIL_HOST","")
 EMAIL_PORT = int(os.getenv("EMAIL_PORT","465"))
