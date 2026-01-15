@@ -3,72 +3,125 @@
 {% block title %}Nueva Compra - DisiTech{% endblock %}
 
 {% block content %}
-<div style="max-width: 900px; margin: 0 auto;">
-    <h1 style="margin-bottom: 2rem;">Nueva Compra</h1>
-
-    <form method="post" id="purchaseForm">
-        {% csrf_token %}
-        
-        <div class="card">
-            <div class="card-header">Información General</div>
-            
-            <div class="form-group">
-                <label for="supplier" class="form-label">Proveedor *</label>
-                <select id="supplier" name="supplier" class="form-control" required>
-                    <option value="">Seleccione un proveedor</option>
-                    {% for supplier in suppliers %}
-                    <option value="{{ supplier.id }}">{{ supplier.name }}</option>
-                    {% endfor %}
-                </select>
+<div class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1 class="m-0">Nueva Compra</h1>
             </div>
-
-            <div class="form-group">
-                <label for="purchased_at" class="form-label">Fecha de Compra *</label>
-                <input type="date" id="purchased_at" name="purchased_at" class="form-control" required>
-            </div>
-
-            <div class="form-group">
-                <label for="ref" class="form-label">Referencia (Factura/OC)</label>
-                <input type="text" id="ref" name="ref" class="form-control">
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-end">
+                    <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Dashboard</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'purchase_list' %}">Compras</a></li>
+                    <li class="breadcrumb-item active">Nueva</li>
+                </ol>
             </div>
         </div>
+    </div>
+</div>
 
-        <div class="card">
-            <div class="card-header">Líneas de Compra</div>
+<div class="content">
+    <div class="container-fluid">
+        <form method="post" id="purchaseForm">
+            {% csrf_token %}
             
-            <div id="purchaseLines">
-                <div class="purchase-line" style="display: grid; grid-template-columns: 2fr 1fr 1fr auto; gap: 1rem; margin-bottom: 1rem; padding: 1rem; background: #f8fafc; border-radius: 0.375rem;">
-                    <div class="form-group" style="margin: 0;">
-                        <label class="form-label">Producto *</label>
-                        <select name="lines[0][item]" class="form-control" required>
-                            <option value="">Seleccione un producto</option>
-                            {% for item in items %}
-                            <option value="{{ item.id }}">{{ item.sku }} - {{ item.description }}</option>
-                            {% endfor %}
-                        </select>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title"><i class="bi bi-info-circle"></i> Información General</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="supplier" class="form-label">Proveedor <span class="text-danger">*</span></label>
+                                        <select id="supplier" name="supplier" class="form-select" required>
+                                            <option value="">Seleccione un proveedor</option>
+                                            {% for supplier in suppliers %}
+                                            <option value="{{ supplier.id }}">{{ supplier.name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="purchased_at" class="form-label">Fecha de Compra <span class="text-danger">*</span></label>
+                                        <input type="date" id="purchased_at" name="purchased_at" class="form-control" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="mb-3">
+                                        <label for="ref" class="form-label">Referencia (Factura/OC)</label>
+                                        <input type="text" id="ref" name="ref" class="form-control" placeholder="Número de factura u orden de compra">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="form-group" style="margin: 0;">
-                        <label class="form-label">Cantidad *</label>
-                        <input type="number" name="lines[0][qty]" class="form-control" min="1" required>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title"><i class="bi bi-cart"></i> Líneas de Compra</h3>
+                        </div>
+                        <div class="card-body">
+                            <div id="purchaseLines">
+                                <div class="purchase-line mb-3 p-3 bg-light rounded">
+                                    <div class="row">
+                                        <div class="col-md-5">
+                                            <div class="mb-3 mb-md-0">
+                                                <label class="form-label">Producto <span class="text-danger">*</span></label>
+                                                <select name="lines[0][item]" class="form-select" required>
+                                                    <option value="">Seleccione un producto</option>
+                                                    {% for item in items %}
+                                                    <option value="{{ item.id }}">{{ item.sku }} - {{ item.description }}</option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="mb-3 mb-md-0">
+                                                <label class="form-label">Cantidad <span class="text-danger">*</span></label>
+                                                <input type="number" name="lines[0][qty]" class="form-control" min="1" required>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="mb-3 mb-md-0">
+                                                <label class="form-label">Precio Unit. <span class="text-danger">*</span></label>
+                                                <input type="number" name="lines[0][unit_price]" class="form-control" step="0.01" min="0" required>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-1 d-flex align-items-end">
+                                            <button type="button" class="btn btn-danger btn-sm w-100 remove-line" style="visibility: hidden;">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <button type="button" id="addLine" class="btn btn-secondary">
+                                <i class="bi bi-plus-circle"></i> Agregar Línea
+                            </button>
+                        </div>
                     </div>
-                    <div class="form-group" style="margin: 0;">
-                        <label class="form-label">Precio Unitario *</label>
-                        <input type="number" name="lines[0][unit_price]" class="form-control" step="0.01" min="0" required>
-                    </div>
-                    <div style="display: flex; align-items: flex-end;">
-                        <button type="button" class="btn btn-danger btn-sm remove-line" style="visibility: hidden;">-</button>
+
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="d-flex gap-2">
+                                <button type="submit" class="btn btn-success">
+                                    <i class="bi bi-check-circle"></i> Crear Compra
+                                </button>
+                                <a href="{% url 'purchase_list' %}" class="btn btn-secondary">
+                                    <i class="bi bi-x-circle"></i> Cancelar
+                                </a>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-
-            <button type="button" id="addLine" class="btn btn-secondary">+ Agregar Línea</button>
-        </div>
-
-        <div style="display: flex; gap: 1rem; margin-top: 2rem;">
-            <button type="submit" class="btn btn-success">Crear Compra</button>
-            <a href="{% url 'purchase_list' %}" class="btn btn-secondary">Cancelar</a>
-        </div>
-    </form>
+        </form>
+    </div>
 </div>
 
 <script>
@@ -77,28 +130,37 @@ let lineIndex = 1;
 document.getElementById('addLine').addEventListener('click', function() {
     const container = document.getElementById('purchaseLines');
     const newLine = document.createElement('div');
-    newLine.className = 'purchase-line';
-    newLine.style = 'display: grid; grid-template-columns: 2fr 1fr 1fr auto; gap: 1rem; margin-bottom: 1rem; padding: 1rem; background: #f8fafc; border-radius: 0.375rem;';
+    newLine.className = 'purchase-line mb-3 p-3 bg-light rounded';
     newLine.innerHTML = `
-        <div class="form-group" style="margin: 0;">
-            <label class="form-label">Producto *</label>
-            <select name="lines[${lineIndex}][item]" class="form-control" required>
-                <option value="">Seleccione un producto</option>
-                {% for item in items %}
-                <option value="{{ item.id }}">{{ item.sku }} - {{ item.description }}</option>
-                {% endfor %}
-            </select>
-        </div>
-        <div class="form-group" style="margin: 0;">
-            <label class="form-label">Cantidad *</label>
-            <input type="number" name="lines[${lineIndex}][qty]" class="form-control" min="1" required>
-        </div>
-        <div class="form-group" style="margin: 0;">
-            <label class="form-label">Precio Unitario *</label>
-            <input type="number" name="lines[${lineIndex}][unit_price]" class="form-control" step="0.01" min="0" required>
-        </div>
-        <div style="display: flex; align-items: flex-end;">
-            <button type="button" class="btn btn-danger btn-sm remove-line">-</button>
+        <div class="row">
+            <div class="col-md-5">
+                <div class="mb-3 mb-md-0">
+                    <label class="form-label">Producto <span class="text-danger">*</span></label>
+                    <select name="lines[${lineIndex}][item]" class="form-select" required>
+                        <option value="">Seleccione un producto</option>
+                        {% for item in items %}
+                        <option value="{{ item.id }}">{{ item.sku }} - {{ item.description }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="mb-3 mb-md-0">
+                    <label class="form-label">Cantidad <span class="text-danger">*</span></label>
+                    <input type="number" name="lines[${lineIndex}][qty]" class="form-control" min="1" required>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="mb-3 mb-md-0">
+                    <label class="form-label">Precio Unit. <span class="text-danger">*</span></label>
+                    <input type="number" name="lines[${lineIndex}][unit_price]" class="form-control" step="0.01" min="0" required>
+                </div>
+            </div>
+            <div class="col-md-1 d-flex align-items-end">
+                <button type="button" class="btn btn-danger btn-sm w-100 remove-line">
+                    <i class="bi bi-trash"></i>
+                </button>
+            </div>
         </div>
     `;
     container.appendChild(newLine);
@@ -107,8 +169,9 @@ document.getElementById('addLine').addEventListener('click', function() {
 });
 
 document.getElementById('purchaseLines').addEventListener('click', function(e) {
-    if (e.target.classList.contains('remove-line')) {
-        e.target.closest('.purchase-line').remove();
+    if (e.target.classList.contains('remove-line') || e.target.closest('.remove-line')) {
+        const btn = e.target.classList.contains('remove-line') ? e.target : e.target.closest('.remove-line');
+        btn.closest('.purchase-line').remove();
         updateRemoveButtons();
     }
 });

@@ -3,56 +3,100 @@
 {% block title %}Detalle de Requisición - DisiTech{% endblock %}
 
 {% block content %}
-<div style="max-width: 900px; margin: 0 auto;">
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
-        <h1>Requisición #{{ requisition.id }}</h1>
-        <a href="{% url 'requisition_list' %}" class="btn btn-secondary">Volver</a>
-    </div>
-
-    <div class="card">
-        <div class="card-header">Información General</div>
-        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem;">
-            <div>
-                <label style="color: #64748b; font-size: 0.875rem;">Solicitante</label>
-                <p style="font-weight: 600;">{{ requisition.requested_by.username }}</p>
+<div class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1 class="m-0">Requisición #{{ requisition.id }}</h1>
             </div>
-            <div>
-                <label style="color: #64748b; font-size: 0.875rem;">Fecha de Solicitud</label>
-                <p style="font-weight: 600;">{{ requisition.requested_at|date:"d/m/Y" }}</p>
-            </div>
-            <div style="grid-column: 1 / -1;">
-                <label style="color: #64748b; font-size: 0.875rem;">Nota</label>
-                <p style="font-weight: 600;">{{ requisition.note|default:"-" }}</p>
-            </div>
-            <div>
-                <label style="color: #64748b; font-size: 0.875rem;">Fecha de Registro</label>
-                <p style="font-weight: 600;">{{ requisition.created_at|date:"d/m/Y H:i" }}</p>
+            <div class="col-sm-6">
+                <div class="float-end">
+                    <a href="{% url 'requisition_list' %}" class="btn btn-secondary">
+                        <i class="bi bi-arrow-left"></i> Volver
+                    </a>
+                </div>
             </div>
         </div>
     </div>
+</div>
 
-    <div class="card">
-        <div class="card-header">Productos Solicitados</div>
-        <table>
-            <thead>
-                <tr>
-                    <th>SKU</th>
-                    <th>Descripción</th>
-                    <th>Cantidad Solicitada</th>
-                    <th>Stock Actual</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for line in requisition.lines.all %}
-                <tr>
-                    <td><strong>{{ line.item.sku }}</strong></td>
-                    <td>{{ line.item.description }}</td>
-                    <td>{{ line.qty }}</td>
-                    <td>{{ line.item.stock }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+<div class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title"><i class="bi bi-info-circle"></i> Información General</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="text-muted small">Solicitante</label>
+                                <p class="fw-bold mb-0">
+                                    {% if requisition.requested_by.first_name and requisition.requested_by.last_name %}
+                                        {{ requisition.requested_by.first_name }} {{ requisition.requested_by.last_name }}
+                                    {% else %}
+                                        {{ requisition.requested_by.username }}
+                                    {% endif %}
+                                </p>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="text-muted small">Fecha de Solicitud</label>
+                                <p class="fw-bold mb-0">{{ requisition.requested_at|date:"d/m/Y" }}</p>
+                            </div>
+                            <div class="col-md-12 mb-3">
+                                <label class="text-muted small">Nota</label>
+                                <p class="fw-bold mb-0">{{ requisition.note|default:"-" }}</p>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="text-muted small">Fecha de Registro</label>
+                                <p class="fw-bold mb-0">{{ requisition.created_at|date:"d/m/Y H:i" }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title"><i class="bi bi-box-seam"></i> Productos Solicitados</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-striped table-hover">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>SKU</th>
+                                        <th>Descripción</th>
+                                        <th class="text-center">Cantidad Solicitada</th>
+                                        <th class="text-center">Stock Actual</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for line in requisition.lines.all %}
+                                    <tr>
+                                        <td><strong>{{ line.item.sku }}</strong></td>
+                                        <td>{{ line.item.description }}</td>
+                                        <td class="text-center">
+                                            <span class="badge bg-primary">{{ line.qty }}</span>
+                                        </td>
+                                        <td class="text-center">
+                                            {% if line.item.stock < line.qty %}
+                                                <span class="badge bg-danger">{{ line.item.stock }}</span>
+                                            {% elif line.item.stock <= line.item.min_stock %}
+                                                <span class="badge bg-warning">{{ line.item.stock }}</span>
+                                            {% else %}
+                                                <span class="badge bg-success">{{ line.item.stock }}</span>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 {% endblock %}

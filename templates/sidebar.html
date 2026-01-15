@@ -1,0 +1,139 @@
+{% load static %}
+
+<aside class="app-sidebar bg-body-secondary shadow" data-bs-theme="dark">
+  <!--begin::Sidebar Brand-->
+  <div class="sidebar-brand">
+    <!--begin::Brand Link-->
+    <a href="{% url 'dashboard' %}" class="brand-link">
+      <!--begin::Brand Image-->
+      
+      {% if logo_url %}  
+        <img
+            src="{{ logo_url }}"
+            alt="DisiTech Logo"
+            class="brand-image opacity-75 shadow"
+        />
+      {% else %}
+        <div
+            style="
+                width: 40px;
+                height: 40px;
+                margin: 0 auto;
+                background: linear-gradient(135deg, #1a1a1a 0%, #0a0a0a 100%);
+                border-radius: 0.5rem;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 1.5rem;
+                color: #cd7f32;
+                font-weight: 700;
+                border: 2px solid #b91c1c;
+                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            "
+        >
+            DT
+        </div>
+      {% endif %}
+      <!--end::Brand Image-->
+      <!--begin::Brand Text-->
+      
+      <!--end::Brand Text-->
+    </a>
+    <!--end::Brand Link-->
+  </div>
+  <!--end::Sidebar Brand-->
+  
+  <!--begin::Sidebar Wrapper-->
+  <div class="sidebar-wrapper">
+    <nav class="mt-2">
+      <!--begin::Sidebar Menu-->
+      <ul
+        class="nav sidebar-menu flex-column"
+        data-lte-toggle="treeview"
+        role="navigation"
+        aria-label="Main navigation"
+        data-accordion="false"
+      >
+        <!--begin::Dashboard-->
+        <li class="nav-item">
+          <a href="{% url 'dashboard' %}" class="nav-link">
+            <i class="nav-icon bi bi-speedometer"></i>
+            <p>Dashboard</p>
+          </a>
+        </li>
+        <!--end::Dashboard-->
+
+        <!--begin::Inventario-->
+        {% if perms.inventory.view_inventoryitem %}
+        <li class="nav-item">
+          <a href="{% url 'inventory_list' %}" class="nav-link">
+            <i class="nav-icon bi bi-box-seam"></i>
+            <p>Inventario</p>
+          </a>
+        </li>
+        {% endif %}
+        <!--end::Inventario-->
+
+        <!--begin::Compras-->
+        {% if perms.inventory.view_purchase %}
+        <li class="nav-item">
+          <a href="{% url 'purchase_list' %}" class="nav-link">
+            <i class="nav-icon bi bi-cart"></i>
+            <p>Compras</p>
+          </a>
+        </li>
+        {% endif %}
+        <!--end::Compras-->
+
+        <!--begin::Requisiciones-->
+        {% if perms.inventory.view_requisition %}
+        <li class="nav-item">
+          <a href="{% url 'requisition_list' %}" class="nav-link">
+            <i class="nav-icon bi bi-file-text"></i>
+            <p>Requisiciones</p>
+          </a>
+        </li>
+        {% endif %}
+        <!--end::Requisiciones-->
+
+        <!--begin::RRHH-->
+        {% if perms.profiles.view_employee %}
+        <li class="nav-item">
+          <a href="{% url 'employee_list' %}" class="nav-link">
+            <i class="nav-icon bi bi-people"></i>
+            <p>Empleados</p>
+          </a>
+        </li>
+        {% endif %}
+        <!--end::RRHH-->
+
+        <li class="nav-header">USUARIO</li>
+        
+        <!--begin::User Info-->
+        <li class="nav-item">
+          <a href="{% url 'profile_edit' %}" class="nav-link">
+            <i class="nav-icon bi bi-person-circle"></i>
+            <p>Mi Perfil</p>
+          </a>
+        </li>
+        <!--end::User Info-->
+
+        <!--begin::Logout-->
+        <li class="nav-item">
+          <a href="#" class="nav-link" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+            <i class="nav-icon bi bi-box-arrow-right"></i>
+            <p>Cerrar Sesión</p>
+          </a>
+        </li>
+        <!--end::Logout-->
+      </ul>
+      <!--end::Sidebar Menu-->
+    </nav>
+  </div>
+  <!--end::Sidebar Wrapper-->
+</aside>
+
+<!--begin::Logout Form-->
+<form id="logout-form" method="post" action="{% url 'logout' %}" style="display: none;">
+  {% csrf_token %}
+</form>

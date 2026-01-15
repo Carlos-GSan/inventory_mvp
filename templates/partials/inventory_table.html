@@ -1,0 +1,133 @@
+<!-- Tabla de inventario -->
+{% if items %}
+<div class="table-responsive">
+    <table class="table table-striped table-hover">
+        <thead>
+            <tr>
+                <th>
+                    <input type="checkbox" id="select-all" title="Seleccionar todos">
+                </th>
+                <th>SKU</th>
+                <th>Descripción</th>
+                <th>Categoría</th>
+                <th>Stock</th>
+                <th>Mín/Máx</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in items %}
+            <tr>
+                <td>
+                    <input type="checkbox" class="item-checkbox" value="{{ item.pk }}" data-sku="{{ item.sku }}">
+                </td>
+                <td><strong>{{ item.sku }}</strong></td>
+                <td>{{ item.description }}</td>
+                <td>{{ item.category.name }}</td>
+                <td><strong>{{ item.stock }}</strong></td>
+                <td>{{ item.min_stock }} / {{ item.max_stock }}</td>
+                <td>
+                    {% if item.stock == 0 %}
+                    <span class="badge text-bg-danger">Sin Stock</span>
+                    {% elif item.stock <= item.min_stock %}
+                    <span class="badge text-bg-warning">Stock Bajo</span>
+                    {% else %}
+                    <span class="badge text-bg-success">OK</span>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if perms.inventory.change_inventoryitem %}
+                    <div class="btn-group" role="group">
+                        <a href="{% url 'inventory_update' item.pk %}" class="btn btn-sm btn-primary" title="Editar">
+                            <i class="bi bi-pencil"></i>
+                        </a>
+                        <a href="{% url 'inventory_adjust' item.pk %}" class="btn btn-sm btn-secondary" title="Ajustar Stock">
+                            <i class="bi bi-sliders"></i>
+                        </a>
+                        <a href="{% url 'inventory_print_label' item.pk %}" class="btn btn-sm btn-info" target="_blank" title="Imprimir Etiqueta">
+                            <i class="bi bi-printer"></i>
+                        </a>
+                    </div>
+                    {% else %}
+                    <span class="badge text-bg-warning">Solo lectura</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<!-- Paginación -->
+{% if items.has_other_pages %}
+<div class="d-flex justify-content-between align-items-center mt-3">
+    <div>
+        <small class="text-muted">
+            Mostrando {{ items.start_index }} - {{ items.end_index }} de {{ items.paginator.count }} productos
+        </small>
+    </div>
+    
+    <nav aria-label="Navegación de inventario">
+        <ul class="pagination mb-0">
+            {% if items.has_previous %}
+            <li class="page-item">
+                <a class="page-link" 
+                   hx-get="?page=1{% if search %}&search={{ search }}{% endif %}{% if category_id %}&category={{ category_id }}{% endif %}&per_page={{ per_page }}"
+                   hx-target="#inventory-container"
+                   hx-swap="innerHTML">
+                    <i class="bi bi-chevron-double-left"></i>
+                </a>
+            </li>
+            <li class="page-item">
+                <a class="page-link" 
+                   hx-get="?page={{ items.previous_page_number }}{% if search %}&search={{ search }}{% endif %}{% if category_id %}&category={{ category_id }}{% endif %}&per_page={{ per_page }}"
+                   hx-target="#inventory-container"
+                   hx-swap="innerHTML">
+                    <i class="bi bi-chevron-left"></i>
+                </a>
+            </li>
+            {% endif %}
+            
+            {% for num in items.paginator.page_range %}
+                {% if items.number == num %}
+                <li class="page-item active">
+                    <span class="page-link">{{ num }}</span>
+                </li>
+                {% elif num > items.number|add:'-3' and num < items.number|add:'3' %}
+                <li class="page-item">
+                    <a class="page-link" 
+                       hx-get="?page={{ num }}{% if search %}&search={{ search }}{% endif %}{% if category_id %}&category={{ category_id }}{% endif %}&per_page={{ per_page }}"
+                       hx-target="#inventory-container"
+                       hx-swap="innerHTML">
+                        {{ num }}
+                    </a>
+                </li>
+                {% endif %}
+            {% endfor %}
+            
+            {% if items.has_next %}
+            <li class="page-item">
+                <a class="page-link" 
+                   hx-get="?page={{ items.next_page_number }}{% if search %}&search={{ search }}{% endif %}{% if category_id %}&category={{ category_id }}{% endif %}&per_page={{ per_page }}"
+                   hx-target="#inventory-container"
+                   hx-swap="innerHTML">
+                    <i class="bi bi-chevron-right"></i>
+                </a>
+            </li>
+            <li class="page-item">
+                <a class="page-link" 
+                   hx-get="?page={{ items.paginator.num_pages }}{% if search %}&search={{ search }}{% endif %}{% if category_id %}&category={{ category_id }}{% endif %}&per_page={{ per_page }}"
+                   hx-target="#inventory-container"
+                   hx-swap="innerHTML">
+                    <i class="bi bi-chevron-double-right"></i>
+                </a>
+            </li>
+            {% endif %}
+        </ul>
+    </nav>
+</div>
+{% endif %}
+{% else %}
+<p class="text-center text-muted p-4">No se encontraron productos que coincidan con los filtros</p>
+{% endif %}

@@ -3,70 +3,154 @@
 {% block title %}Inventario - DisiTech{% endblock %}
 
 {% block content %}
-<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
-    <h1>Inventario</h1>
-    {% if perms.inventory.add_inventoryitem %}
-    <a href="{% url 'inventory_create' %}" class="btn btn-primary">+ Nuevo Producto</a>
-    {% endif %}
+<div class="container-fluid">
+    <!-- Encabezado -->
+    <div class="row mb-4">
+        <div class="col-sm-6">
+            <h1 class="m-0">Inventario</h1>
+        </div>
+        <div class="col-sm-6">
+            <div class="float-sm-end">
+                {% if perms.inventory.add_inventoryitem %}
+                <a href="{% url 'inventory_create' %}" class="btn btn-primary">
+                    <i class="bi bi-plus-circle"></i> Nuevo Producto
+                </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Card principal -->
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Lista de Productos</h3>
+            <div class="card-tools">
+                <span class="badge text-bg-primary">{{ items.paginator.count }} producto{{ items.paginator.count|pluralize }}</span>
+            </div>
+        </div>
+        <div class="card-body">
+            <!-- Filtros -->
+            <form method="get" class="row g-3 mb-4" id="filter-form">
+                <div class="col-md-4">
+                    <label for="search" class="form-label">Buscar</label>
+                    <input 
+                        type="text" 
+                        class="form-control" 
+                        id="search"
+                        name="search" 
+                        placeholder="Buscar por SKU o descripción..." 
+                        value="{{ search }}"
+                        hx-get="{% url 'inventory_list' %}"
+                        hx-trigger="keyup changed delay:500ms"
+                        hx-target="#inventory-container"
+                        hx-include="#filter-form input, #filter-form select"
+                    >
+                </div>
+                <div class="col-md-3">
+                    <label for="category" class="form-label">Categoría</label>
+                    <select 
+                        name="category" 
+                        id="category"
+                        class="form-select"
+                        hx-get="{% url 'inventory_list' %}"
+                        hx-trigger="change"
+                        hx-target="#inventory-container"
+                        hx-include="#filter-form input, #filter-form select"
+                    >
+                        <option value="">Todas las categorías</option>
+                        {% for cat in categories %}
+                        <option value="{{ cat.id }}" {% if category_id == cat.id|stringformat:"s" %}selected{% endif %}>
+                            {{ cat.name }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <label for="per_page" class="form-label">Mostrar</label>
+                    <select 
+                        name="per_page" 
+                        id="per_page"
+                        class="form-select"
+                        hx-get="{% url 'inventory_list' %}"
+                        hx-trigger="change"
+                        hx-target="#inventory-container"
+                        hx-include="#filter-form input, #filter-form select"
+                    >
+                        <option value="10" {% if per_page == "10" %}selected{% endif %}>10</option>
+                        <option value="20" {% if per_page == "20" %}selected{% endif %}>20</option>
+                        <option value="45" {% if per_page == "45" %}selected{% endif %}>45</option>
+                    </select>
+                </div>
+                <div class="col-md-3 d-flex align-items-end">
+                    <a href="{% url 'inventory_list' %}" class="btn btn-secondary w-100">
+                        <i class="bi bi-x-circle"></i> Limpiar Filtros
+                    </a>
+                </div>
+            </form>
+
+            <!-- Contenedor de la tabla -->
+            <div id="inventory-container">
+                {% include 'partials/inventory_table.html' %}
+            </div>
+        </div>
+    </div>
 </div>
 
-<div class="card">
-    <form method="get" style="display: flex; gap: 1rem; margin-bottom: 1rem;">
-        <input type="text" name="search" class="form-control" placeholder="Buscar por SKU o descripción..." value="{{ request.GET.search }}">
-        <select name="category" class="form-control" style="max-width: 200px;">
-            <option value="">Todas las categorías</option>
-            {% for cat in categories %}
-            <option value="{{ cat.id }}" {% if request.GET.category == cat.id|stringformat:"s" %}selected{% endif %}>{{ cat.name }}</option>
-            {% endfor %}
-        </select>
-        <button type="submit" class="btn btn-primary">Filtrar</button>
-        <a href="{% url 'inventory_list' %}" class="btn btn-secondary">Limpiar</a>
-    </form>
+<!-- Botón flotante para imprimir seleccionados -->
+<button 
+    id="print-selected-btn" 
+    class="btn btn-info position-fixed bottom-0 end-0 m-4 shadow-lg" 
+    style="display: none; z-index: 1000;"
+    title="Imprimir etiquetas seleccionadas"
+>
+    <i class="bi bi-printer-fill"></i> 
+    <span id="selected-count">0</span> seleccionado(s)
+</button>
 
-    <table>
-        <thead>
-            <tr>
-                <th>SKU</th>
-                <th>Descripción</th>
-                <th>Categoría</th>
-                <th>Stock</th>
-                <th>Mín/Máx</th>
-                <th>Estado</th>
-                <th>Acciones</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for item in items %}
-            <tr>
-                <td><strong>{{ item.sku }}</strong></td>
-                <td>{{ item.description }}</td>
-                <td>{{ item.category.name }}</td>
-                <td><strong>{{ item.stock }}</strong></td>
-                <td>{{ item.min_stock }} / {{ item.max_stock }}</td>
-                <td>
-                    {% if item.stock == 0 %}
-                    <span class="badge badge-danger">Sin Stock</span>
-                    {% elif item.stock <= item.min_stock %}
-                    <span class="badge badge-warning">Stock Bajo</span>
-                    {% else %}
-                    <span class="badge badge-success">OK</span>
-                    {% endif %}
-                </td>
-                <td>
-                    {% if perms.inventory.change_inventoryitem %}
-                    <a href="{% url 'inventory_update' item.pk %}" class="btn btn-sm btn-primary">Editar</a>
-                    <a href="{% url 'inventory_adjust' item.pk %}" class="btn btn-sm btn-secondary">Ajustar</a>
-                    {% else %}
-                    <span class="badge badge-warning">Solo lectura</span>
-                    {% endif %}
-                </td>
-            </tr>
-            {% empty %}
-            <tr>
-                <td colspan="7" style="text-align: center; padding: 2rem; color: #64748b;">No se encontraron productos</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-</div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Manejar selección de todos
+    const selectAllCheckbox = document.getElementById('select-all');
+    const printSelectedBtn = document.getElementById('print-selected-btn');
+    const selectedCountSpan = document.getElementById('selected-count');
+    
+    function updateSelectedCount() {
+        const checkboxes = document.querySelectorAll('.item-checkbox:checked');
+        const count = checkboxes.length;
+        selectedCountSpan.textContent = count;
+        
+        if (count > 0) {
+            printSelectedBtn.style.display = 'block';
+        } else {
+            printSelectedBtn.style.display = 'none';
+        }
+    }
+    
+    // Delegación de eventos para checkboxes (funciona con HTMX)
+    document.addEventListener('change', function(e) {
+        if (e.target.id === 'select-all') {
+            const checkboxes = document.querySelectorAll('.item-checkbox');
+            checkboxes.forEach(cb => cb.checked = e.target.checked);
+            updateSelectedCount();
+        } else if (e.target.classList.contains('item-checkbox')) {
+            updateSelectedCount();
+        }
+    });
+    
+    // Imprimir etiquetas seleccionadas
+    printSelectedBtn.addEventListener('click', function() {
+        const checkboxes = document.querySelectorAll('.item-checkbox:checked');
+        const ids = Array.from(checkboxes).map(cb => cb.value);
+        
+        if (ids.length === 0) {
+            alert('Por favor seleccione al menos un producto');
+            return;
+        }
+        
+        // Abrir ventana con múltiples etiquetas
+        const url = "{% url 'inventory_print_labels' %}?ids=" + ids.join(',');
+        window.open(url, '_blank');
+    });
+});
+</script>
 {% endblock %}

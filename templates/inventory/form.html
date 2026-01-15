@@ -3,65 +3,285 @@
 {% block title %}{{ title }} - DisiTech{% endblock %}
 
 {% block content %}
-<div style="max-width: 600px; margin: 0 auto;">
-    <h1 style="margin-bottom: 2rem;">{{ title }}</h1>
+<div class="container-fluid">
+    <!-- Encabezado -->
+    <div class="row mb-4">
+        <div class="col-sm-6">
+            <h1 class="m-0">{{ title }}</h1>
+        </div>
+        <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-end">
+                <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Inicio</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'inventory_list' %}">Inventario</a></li>
+                <li class="breadcrumb-item active">{{ title }}</li>
+            </ol>
+        </div>
+    </div>
 
-    <div class="card">
-        <form method="post">
-            {% csrf_token %}
-            
-            <div class="form-group">
-                <label for="sku" class="form-label">SKU *</label>
-                <input type="text" id="sku" name="sku" class="form-control" value="{{ form.sku.value|default:'' }}" required>
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        <i class="bi bi-box-seam"></i> Información del Producto
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <form method="post" id="product-form">
+                        {% csrf_token %}
+                        
+                        <!-- SKU y Slug (ocultos, autogenerados) -->
+                        <input type="hidden" id="sku" name="sku" value="{{ form.sku.value|default:'' }}">
+                        <input type="hidden" id="slug" name="slug" value="{{ form.slug.value|default:'' }}">
+                        
+                        <!-- SKU generado (solo lectura) -->
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="sku_display" class="form-label">
+                                    <i class="bi bi-upc-scan"></i> SKU (Código de Barras)
+                                    <span class="text-danger">*</span>
+                                </label>
+                                <div class="input-group">
+                                    <input 
+                                        type="text" 
+                                        id="sku_display" 
+                                        class="form-control bg-light" 
+                                        value="{{ form.sku.value|default:'Auto-generado' }}" 
+                                        readonly
+                                    >
+                                    <button 
+                                        type="button" 
+                                        class="btn btn-outline-secondary" 
+                                        id="regenerate-sku"
+                                        title="Regenerar SKU"
+                                    >
+                                        <i class="bi bi-arrow-clockwise"></i>
+                                    </button>
+                                </div>
+                                <small class="text-muted">Se generará automáticamente al guardar</small>
+                            </div>
+                        </div>
+
+                        <!-- Descripción -->
+                        <div class="mb-3">
+                            <label for="description" class="form-label">
+                                <i class="bi bi-text-left"></i> Descripción
+                                <span class="text-danger">*</span>
+                            </label>
+                            <input 
+                                type="text" 
+                                id="description" 
+                                name="description" 
+                                class="form-control" 
+                                value="{{ form.description.value|default:'' }}" 
+                                placeholder="Ej: Tornillo hexagonal M8x20"
+                                required
+                            >
+                        </div>
+
+                        <!-- Categoría -->
+                        <div class="mb-3">
+                            <label for="category" class="form-label">
+                                <i class="bi bi-tag"></i> Categoría
+                                <span class="text-danger">*</span>
+                            </label>
+                            <select id="category" name="category" class="form-select" required>
+                                <option value="">Seleccione una categoría</option>
+                                {% for cat in categories %}
+                                <option value="{{ cat.id }}" {% if form.category.value == cat.id %}selected{% endif %}>
+                                    {{ cat.name }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <!-- Stock Actual -->
+                        <div class="row mb-3">
+                            <div class="col-md-4">
+                                <label for="stock" class="form-label">
+                                    <i class="bi bi-box"></i> Stock Actual
+                                    <span class="text-danger">*</span>
+                                </label>
+                                <input 
+                                    type="number" 
+                                    id="stock" 
+                                    name="stock" 
+                                    class="form-control" 
+                                    value="{{ form.stock.value|default:'0' }}" 
+                                    min="0" 
+                                    step="1"
+                                    required
+                                >
+                            </div>
+                            <div class="col-md-4">
+                                <label for="min_stock" class="form-label">
+                                    <i class="bi bi-dash-circle"></i> Stock Mínimo
+                                    <span class="text-danger">*</span>
+                                </label>
+                                <input 
+                                    type="number" 
+                                    id="min_stock" 
+                                    name="min_stock" 
+                                    class="form-control" 
+                                    value="{{ form.min_stock.value|default:'5' }}" 
+                                    min="0" 
+                                    step="1"
+                                    required
+                                >
+                            </div>
+                            <div class="col-md-4">
+                                <label for="max_stock" class="form-label">
+                                    <i class="bi bi-plus-circle"></i> Stock Máximo
+                                    <span class="text-danger">*</span>
+                                </label>
+                                <input 
+                                    type="number" 
+                                    id="max_stock" 
+                                    name="max_stock" 
+                                    class="form-control" 
+                                    value="{{ form.max_stock.value|default:'100' }}" 
+                                    min="0" 
+                                    step="1"
+                                    required
+                                >
+                            </div>
+                        </div>
+
+                        <!-- Estado activo -->
+                        <div class="mb-4">
+                            <div class="form-check form-switch">
+                                <input 
+                                    class="form-check-input" 
+                                    type="checkbox" 
+                                    id="active" 
+                                    name="active" 
+                                    {% if form.active.value or form.active.value == None %}checked{% endif %}
+                                >
+                                <label class="form-check-label" for="active">
+                                    <i class="bi bi-check-circle"></i> Producto Activo
+                                </label>
+                            </div>
+                            <small class="text-muted">Los productos inactivos no aparecerán en el inventario</small>
+                        </div>
+
+                        <!-- Botones -->
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-save"></i> Guardar Producto
+                            </button>
+                            <a href="{% url 'inventory_list' %}" class="btn btn-secondary">
+                                <i class="bi bi-x-circle"></i> Cancelar
+                            </a>
+                        </div>
+                    </form>
+                </div>
             </div>
 
-            <div class="form-group">
-                <label for="slug" class="form-label">Slug *</label>
-                <input type="text" id="slug" name="slug" class="form-control" value="{{ form.slug.value|default:'' }}" required>
+            <!-- Card de ayuda -->
+            <div class="card mt-3">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <i class="bi bi-info-circle text-primary"></i> Información
+                    </h5>
+                    <ul class="mb-0">
+                        <li><strong>SKU:</strong> Se generará automáticamente como código de barras único de 13 dígitos (EAN-13)</li>
+                        <li><strong>Slug:</strong> Se creará automáticamente desde la descripción del producto</li>
+                        <li><strong>Stock Mínimo:</strong> Alerta cuando el stock baje de este nivel</li>
+                        <li><strong>Stock Máximo:</strong> Límite recomendado para reabastecimiento</li>
+                    </ul>
+                </div>
             </div>
-
-            <div class="form-group">
-                <label for="description" class="form-label">Descripción *</label>
-                <input type="text" id="description" name="description" class="form-control" value="{{ form.description.value|default:'' }}" required>
-            </div>
-
-            <div class="form-group">
-                <label for="category" class="form-label">Categoría *</label>
-                <select id="category" name="category" class="form-control" required>
-                    <option value="">Seleccione una categoría</option>
-                    {% for cat in categories %}
-                    <option value="{{ cat.id }}" {% if form.category.value == cat.id %}selected{% endif %}>{{ cat.name }}</option>
-                    {% endfor %}
-                </select>
-            </div>
-
-            <div class="form-group">
-                <label for="stock" class="form-label">Stock Actual *</label>
-                <input type="number" id="stock" name="stock" class="form-control" value="{{ form.stock.value|default:'0' }}" min="0" required>
-            </div>
-
-            <div class="form-group">
-                <label for="min_stock" class="form-label">Stock Mínimo *</label>
-                <input type="number" id="min_stock" name="min_stock" class="form-control" value="{{ form.min_stock.value|default:'0' }}" min="0" required>
-            </div>
-
-            <div class="form-group">
-                <label for="max_stock" class="form-label">Stock Máximo *</label>
-                <input type="number" id="max_stock" name="max_stock" class="form-control" value="{{ form.max_stock.value|default:'0' }}" min="0" required>
-            </div>
-
-            <div class="form-group">
-                <label>
-                    <input type="checkbox" name="active" {% if form.active.value %}checked{% endif %}>
-                    Activo
-                </label>
-            </div>
-
-            <div style="display: flex; gap: 1rem; margin-top: 2rem;">
-                <button type="submit" class="btn btn-primary">Guardar</button>
-                <a href="{% url 'inventory_list' %}" class="btn btn-secondary">Cancelar</a>
-            </div>
-        </form>
+        </div>
     </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('product-form');
+    const descriptionInput = document.getElementById('description');
+    const skuInput = document.getElementById('sku');
+    const skuDisplay = document.getElementById('sku_display');
+    const slugInput = document.getElementById('slug');
+    const regenerateBtn = document.getElementById('regenerate-sku');
+    
+    // Función para generar código de barras EAN-13
+    function generateBarcode() {
+        // Generar 12 dígitos aleatorios
+        let code = '';
+        for (let i = 0; i < 12; i++) {
+            code += Math.floor(Math.random() * 10);
+        }
+        
+        // Calcular dígito de control
+        let sum = 0;
+        for (let i = 0; i < 12; i++) {
+            const digit = parseInt(code[i]);
+            sum += (i % 2 === 0) ? digit : digit * 3;
+        }
+        const checkDigit = (10 - (sum % 10)) % 10;
+        
+        return code + checkDigit;
+    }
+    
+    // Función para crear slug desde descripción
+    function createSlug(text) {
+        return text
+            .toLowerCase()
+            .normalize('NFD')
+            .replace(/[\u0300-\u036f]/g, '') // Eliminar acentos
+            .replace(/[^a-z0-9\s-]/g, '') // Eliminar caracteres especiales
+            .trim()
+            .replace(/\s+/g, '-') // Espacios a guiones
+            .replace(/-+/g, '-'); // Múltiples guiones a uno
+    }
+    
+    // Generar SKU si está vacío
+    if (!skuInput.value || skuInput.value === '') {
+        const newSku = generateBarcode();
+        skuInput.value = newSku;
+        skuDisplay.value = newSku;
+    }
+    
+    // Regenerar SKU manualmente
+    regenerateBtn.addEventListener('click', function() {
+        const newSku = generateBarcode();
+        skuInput.value = newSku;
+        skuDisplay.value = newSku;
+    });
+    
+    // Auto-generar slug desde descripción
+    descriptionInput.addEventListener('input', function() {
+        const slug = createSlug(this.value);
+        slugInput.value = slug;
+    });
+    
+    // Validación antes de enviar
+    form.addEventListener('submit', function(e) {
+        const stock = parseInt(document.getElementById('stock').value);
+        const minStock = parseInt(document.getElementById('min_stock').value);
+        const maxStock = parseInt(document.getElementById('max_stock').value);
+        
+        if (minStock > maxStock) {
+            e.preventDefault();
+            alert('El stock mínimo no puede ser mayor que el stock máximo');
+            return false;
+        }
+        
+        if (stock > maxStock) {
+            if (!confirm('El stock actual es mayor al máximo. ¿Desea continuar?')) {
+                e.preventDefault();
+                return false;
+            }
+        }
+        
+        // Asegurar que SKU y slug estén generados
+        if (!skuInput.value) {
+            skuInput.value = generateBarcode();
+        }
+        if (!slugInput.value) {
+            slugInput.value = createSlug(descriptionInput.value);
+        }
+    });
+});
+</script>
 {% endblock %}

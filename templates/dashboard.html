@@ -5,106 +5,189 @@
 {% block content %}
 <h1 style="margin-bottom: 2rem; color: #1e293b;">Dashboard</h1>
 
-<div class="stats-grid">
-    {% if perms.inventory.view_inventoryitem %}
-    <div class="stat-card">
-        <div class="stat-value">{{ stats.total_items }}</div>
-        <div class="stat-label">Total de Productos</div>
-    </div>
-    <div class="stat-card">
-        <div class="stat-value">{{ stats.low_stock_items }}</div>
-        <div class="stat-label">Productos Bajo Stock</div>
-    </div>
-    {% endif %}
-    {% if perms.inventory.view_purchase %}
-    <div class="stat-card">
-        <div class="stat-value">{{ stats.total_purchases }}</div>
-        <div class="stat-label">Compras del Mes</div>
-    </div>
-    {% endif %}
-    {% if perms.inventory.view_requisition %}
-    <div class="stat-card">
-        <div class="stat-value">{{ stats.total_requisitions }}</div>
-        <div class="stat-label">Requisiciones del Mes</div>
-    </div>
-    {% endif %}
-</div>
+        <div class="row">
+              <!--begin::Col-->
+            {% if perms.inventory.view_purchase %}
+              <div class="col-lg-3 col-6">
+                <!--begin::Small Box Widget 1--> 
+                <div class="small-box text-bg-primary">
+                  <div class="inner">
+                    <h3>{{ stats.total_purchases }}</h3>
+                    <p>Compras del mes</p>
+                  </div>
+                  <svg class="small-box-icon" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                    <path d="M2.25 2.25a.75.75 0 000 1.5h1.386c.17 0 .318.114.362.278l2.558 9.592a3.752 3.752 0 00-2.806 3.63c0 .414.336.75.75.75h15.75a.75.75 0 000-1.5H5.378A2.25 2.25 0 017.5 15h11.218a.75.75 0 00.674-.421 60.358 60.358 0 002.96-7.228.75.75 0 00-.525-.965A60.864 60.864 0 005.68 4.509l-.232-.867A1.875 1.875 0 003.636 2.25H2.25zM3.75 20.25a1.5 1.5 0 113 0 1.5 1.5 0 01-3 0zM16.5 20.25a1.5 1.5 0 113 0 1.5 1.5 0 01-3 0z"></path>
+                  </svg>
+                  <a href="{% url 'purchase_list' %}" class="small-box-footer link-light link-underline-opacity-0 link-underline-opacity-50-hover">
+                    Ver compras <i class="bi bi-link-45deg"></i>
+                  </a>
+                </div>  
+                <!--end::Small Box Widget 1-->
+              </div>
+            {% endif %}
+              <!--end::Col-->
+            {% if perms.inventory.view_requisition %}
+              <div class="col-lg-3 col-6">
+                <!--begin::Small Box Widget 2-->
+                <div class="small-box text-bg-success">
+                  <div class="inner">
+                    <h3>{{ stats.total_requisitions }}</h3>
+                    <p>Requisiciones</p>
+                  </div>
+                  <i class="small-box-icon bi bi-file-text"></i>
+
+                  <a href="{% url 'requisition_list' %}" class="small-box-footer link-light link-underline-opacity-0 link-underline-opacity-50-hover">
+                    Requisiciones <i class="bi bi-link-45deg"></i>
+                  </a>
+                </div>
+                <!--end::Small Box Widget 2-->
+              </div>
+            {% endif %}
+              <!--end::Col-->
+            {% if perms.inventory.view_inventoryitem %}
+              <div class="col-lg-3 col-6">
+                <!--begin::Small Box Widget 3-->
+                <div class="small-box text-bg-warning">
+                  <div class="inner">
+                    <h3>{{ stats.total_items }}</h3>
+                    <p>Total de Productos</p>
+                  </div>
+                  <svg class="small-box-icon" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                    <path d="M3.375 3C2.339 3 1.5 3.84 1.5 4.875v.75c0 1.036.84 1.875 1.875 1.875h17.25c1.035 0 1.875-.84 1.875-1.875v-.75C22.5 3.839 21.66 3 20.625 3H3.375z"></path>
+                    <path clip-rule="evenodd" fill-rule="evenodd" d="M3.087 9l.54 9.176A3 3 0 006.62 21h10.757a3 3 0 002.995-2.824L20.913 9H3.087zm6.163 3.75A.75.75 0 0110 12h4a.75.75 0 010 1.5h-4a.75.75 0 01-.75-.75z"></path>
+                  </svg>
+                  <a href="{% url 'inventory_list' %}" class="small-box-footer link-dark link-underline-opacity-0 link-underline-opacity-50-hover">
+                    Ver productos <i class="bi bi-link-45deg"></i>
+                  </a>
+                </div>
+                <!--end::Small Box Widget 3-->
+              </div>
+              <!--end::Col-->
+              <div class="col-lg-3 col-6">
+                <!--begin::Small Box Widget 4-->
+                <div class="small-box text-bg-danger">
+                  <div class="inner">
+                    <h3>{{ stats.low_stock_items }}</h3>
+                    <p>Productos bajo stock</p>
+                  </div>
+                  <svg class="small-box-icon" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                    <path clip-rule="evenodd" fill-rule="evenodd" d="M5.25 2.25a3 3 0 00-3 3v4.318a3 3 0 00.879 2.121l9.58 9.581c.92.92 2.39 1.186 3.548.428a18.849 18.849 0 005.441-5.44c.758-1.16.492-2.629-.428-3.548l-9.58-9.581a3 3 0 00-2.122-.879H5.25zM6.375 7.5a1.125 1.125 0 100-2.25 1.125 1.125 0 000 2.25z"></path>
+                  </svg>
+                  <a href="{% url 'inventory_list' %}" class="small-box-footer link-dark link-underline-opacity-0 link-underline-opacity-50-hover">
+                    Ver productos <i class="bi bi-link-45deg"></i>
+                  </a>
+                </div>
+                <!--end::Small Box Widget 4-->
+              </div>
+            {% endif %}
+              <!--end::Col-->
+        </div>
 
 {% if perms.inventory.view_inventoryitem %}
-<div class="card">
-    <div class="card-header">Productos con Stock Bajo</div>
-    {% if low_stock_items %}
-    <table>
-        <thead>
-            <tr>
-                <th>SKU</th>
-                <th>Descripción</th>
-                <th>Categoría</th>
-                <th>Stock Actual</th>
-                <th>Stock Mínimo</th>
-                <th>Estado</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for item in low_stock_items %}
-            <tr>
-                <td><strong>{{ item.sku }}</strong></td>
-                <td>{{ item.description }}</td>
-                <td>{{ item.category.name }}</td>
-                <td>{{ item.stock }}</td>
-                <td>{{ item.min_stock }}</td>
-                <td>
-                    {% if item.stock == 0 %}
-                    <span class="badge badge-danger">Sin Stock</span>
-                    {% else %}
-                    <span class="badge badge-warning">Stock Bajo</span>
-                    {% endif %}
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-    {% else %}
-    <p style="color: #64748b; text-align: center; padding: 2rem;">No hay productos con stock bajo</p>
-    {% endif %}
+<div class="card mb-4">
+    <div class="card-header">
+        <h3 class="card-title">Productos con Stock Bajo</h3>
+    </div>
+    <div class="card-body p-0">
+        {% if low_stock_items %}
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>SKU</th>
+                    <th>Descripción</th>
+                    <th>Categoría</th>
+                    <th>Stock Actual</th>
+                    <th>Stock Mínimo</th>
+                    <th>Estado</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in low_stock_items %}
+                <tr>
+                    <td><strong>{{ item.sku }}</strong></td>
+                    <td>{{ item.description }}</td>
+                    <td>{{ item.category.name }}</td>
+                    <td>{{ item.stock }}</td>
+                    <td>{{ item.min_stock }}</td>
+                    <td>
+                        {% if item.stock == 0 %}
+                        <span class="badge text-bg-danger">Sin Stock</span>
+                        {% else %}
+                        <span class="badge text-bg-warning">Stock Bajo</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p class="text-center text-muted p-4">No hay productos con stock bajo</p>
+        {% endif %}
+    </div>
 </div>
 {% endif %}
 
-<div class="card">
-    <div class="card-header">Últimas Transacciones</div>
-    {% if recent_transactions %}
-    <table>
-        <thead>
-            <tr>
-                <th>Fecha</th>
-                <th>Tipo</th>
-                <th>Producto</th>
-                <th>Cantidad</th>
-                <th>Nota</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for txn in recent_transactions %}
-            <tr>
-                <td>{{ txn.happened_at|date:"d/m/Y H:i" }}</td>
-                <td>
-                    {% if txn.txn_type == "PURCHASE" %}
-                    <span class="badge badge-success">Compra</span>
-                    {% elif txn.txn_type == "ISSUE" %}
-                    <span class="badge badge-warning">Salida</span>
-                    {% else %}
-                    <span class="badge">Ajuste</span>
-                    {% endif %}
-                </td>
-                <td>{{ item.sku }} - {{ txn.item.description }}</td>
-                <td>{{ txn.qty }}</td>
-                <td>{{ txn.note|default:"-" }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-    {% else %}
-    <p style="color: #64748b; text-align: center; padding: 2rem;">No hay transacciones recientes</p>
-    {% endif %}
+<div class="card mb-4">
+    <div class="card-header">
+        <h3 class="card-title">Últimas Transacciones</h3>
+    </div>
+    <div class="card-body">
+        <!-- Filtros -->
+        <form method="get" class="row g-3 mb-3" id="filter-form">
+            <div class="col-md-4">
+                <label for="item" class="form-label">Producto</label>
+                <input 
+                    type="text" 
+                    class="form-control" 
+                    id="item" 
+                    name="item" 
+                    value="{{ item_filter }}"
+                    placeholder="Buscar por SKU o descripción..."
+                    hx-get="{% url 'dashboard' %}"
+                    hx-trigger="keyup changed delay:500ms"
+                    hx-target="#transactions-container"
+                    hx-include="#filter-form input"
+                >
+            </div>
+            <div class="col-md-3">
+                <label for="date_from" class="form-label">Fecha Desde</label>
+                <input 
+                    type="date" 
+                    class="form-control" 
+                    id="date_from" 
+                    name="date_from" 
+                    value="{{ date_from }}"
+                    hx-get="{% url 'dashboard' %}"
+                    hx-trigger="change"
+                    hx-target="#transactions-container"
+                    hx-include="#filter-form input"
+                >
+            </div>
+            <div class="col-md-3">
+                <label for="date_to" class="form-label">Fecha Hasta</label>
+                <input 
+                    type="date" 
+                    class="form-control" 
+                    id="date_to" 
+                    name="date_to" 
+                    value="{{ date_to }}"
+                    hx-get="{% url 'dashboard' %}"
+                    hx-trigger="change"
+                    hx-target="#transactions-container"
+                    hx-include="#filter-form input"
+                >
+            </div>
+            <div class="col-md-2 d-flex align-items-end gap-2">
+                <a href="{% url 'dashboard' %}" class="btn btn-secondary">
+                    <i class="bi bi-x-circle"></i> Limpiar
+                </a>
+            </div>
+        </form>
+        
+        <!-- Contenedor de transacciones -->
+        <div id="transactions-container">
+            {% include 'partials/transactions_table.html' %}
+        </div>
+    </div>
 </div>
 {% endblock %}

@@ -10,6 +10,8 @@ urlpatterns = [
     path("inventario/nuevo/", views.inventory_create, name="inventory_create"),
     path("inventario/<int:pk>/editar/", views.inventory_update, name="inventory_update"),
     path("inventario/<int:pk>/ajustar/", views.inventory_adjust, name="inventory_adjust"),
+    path("inventario/<int:pk>/etiqueta/", views.inventory_print_label, name="inventory_print_label"),
+    path("inventario/etiquetas/", views.inventory_print_labels, name="inventory_print_labels"),
     
     # Compras
     path("compras/", views.purchase_list, name="purchase_list"),

@@ -1,0 +1,230 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Mi Perfil - DisiTech{% endblock %}
+
+{% block content %}
+<div class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1 class="m-0">Mi Perfil</h1>
+            </div>
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-end">
+                    <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Dashboard</a></li>
+                    <li class="breadcrumb-item active">Mi Perfil</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="content">
+    <div class="container-fluid">
+        <!-- Mensajes -->
+        {% if messages %}
+        <div class="row">
+            <div class="col-12">
+                {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+        
+        <form method="post" enctype="multipart/form-data" id="profileForm">
+            {% csrf_token %}
+            
+            <div class="row">
+                <div class="col-md-4">
+                    <!-- Foto de Perfil -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title"><i class="bi bi-camera"></i> Foto de Perfil</h3>
+                        </div>
+                        <div class="card-body text-center">
+                            <div class="mb-3">
+                                {% if employee.photo %}
+                                <img id="photoPreview" src="{{ employee.photo.url }}" alt="Foto de perfil" class="img-fluid rounded-circle" style="width: 200px; height: 200px; object-fit: cover; border: 4px solid #dee2e6;">
+                                {% else %}
+                                <div id="photoPreview" class="d-inline-block rounded-circle bg-secondary d-flex align-items-center justify-content-center" style="width: 200px; height: 200px; border: 4px solid #dee2e6;">
+                                    <i class="bi bi-person-circle text-white" style="font-size: 100px;"></i>
+                                </div>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="photo" class="form-label">Cambiar Foto</label>
+                                <input type="file" class="form-control" id="photo" name="photo" accept="image/*">
+                                <small class="text-muted">Formatos: JPG, PNG. Máx 5MB</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Información de Usuario -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title"><i class="bi bi-key"></i> Información de Acceso</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <label class="text-muted small">Nombre de Usuario</label>
+                                <p class="fw-bold mb-0">{{ user.username }}</p>
+                            </div>
+                            <div class="mb-3">
+                                <label class="text-muted small">Fecha de Registro</label>
+                                <p class="fw-bold mb-0">{{ user.date_joined|date:"d/m/Y" }}</p>
+                            </div>
+                            {% if employee.hire_date %}
+                            <div class="mb-0">
+                                <label class="text-muted small">Fecha de Contratación</label>
+                                <p class="fw-bold mb-0">{{ employee.hire_date|date:"d/m/Y" }}</p>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-8">
+                    <!-- Información Personal -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title"><i class="bi bi-person"></i> Información Personal</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="first_name" class="form-label">Nombre(s) <span class="text-danger">*</span></label>
+                                        <input type="text" class="form-control" id="first_name" name="first_name" value="{{ employee.first_name }}" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="last_name" class="form-label">Apellido(s) <span class="text-danger">*</span></label>
+                                        <input type="text" class="form-control" id="last_name" name="last_name" value="{{ employee.last_name }}" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="email" class="form-label">Correo Electrónico <span class="text-danger">*</span></label>
+                                        <input type="email" class="form-control" id="email" name="email" value="{{ employee.email }}" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="phone" class="form-label">Teléfono</label>
+                                        <input type="tel" class="form-control" id="phone" name="phone" value="{{ employee.phone|default:'' }}" placeholder="+52 1234567890">
+                                        <small class="text-muted">Formato internacional: +52 1234567890</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Información Laboral -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title"><i class="bi bi-briefcase"></i> Información Laboral</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="position" class="form-label">Puesto</label>
+                                        <input type="text" class="form-control" id="position" name="position" value="{{ employee.position }}" placeholder="Ej: Administrador">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="department" class="form-label">Departamento</label>
+                                        <input type="text" class="form-control" id="department" name="department" value="{{ employee.department }}" placeholder="Ej: Sistemas">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Botones de Acción -->
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="d-flex gap-2">
+                                <button type="submit" class="btn btn-success">
+                                    <i class="bi bi-check-circle"></i> Guardar Cambios
+                                </button>
+                                <a href="{% url 'dashboard' %}" class="btn btn-secondary">
+                                    <i class="bi bi-x-circle"></i> Cancelar
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+// Preview de la imagen antes de subir
+document.getElementById('photo').addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if (file) {
+        // Validar tamaño (5MB)
+        if (file.size > 5 * 1024 * 1024) {
+            alert('La imagen es muy grande. El tamaño máximo es 5MB.');
+            e.target.value = '';
+            return;
+        }
+        
+        // Validar tipo
+        if (!file.type.match('image.*')) {
+            alert('Por favor selecciona una imagen válida.');
+            e.target.value = '';
+            return;
+        }
+        
+        // Mostrar preview
+        const reader = new FileReader();
+        reader.onload = function(event) {
+            const preview = document.getElementById('photoPreview');
+            if (preview.tagName === 'IMG') {
+                preview.src = event.target.result;
+            } else {
+                const img = document.createElement('img');
+                img.id = 'photoPreview';
+                img.src = event.target.result;
+                img.className = 'img-fluid rounded-circle';
+                img.style.cssText = 'width: 200px; height: 200px; object-fit: cover; border: 4px solid #dee2e6;';
+                preview.parentNode.replaceChild(img, preview);
+            }
+        };
+        reader.readAsDataURL(file);
+    }
+});
+
+// Validación del formulario
+document.getElementById('profileForm').addEventListener('submit', function(e) {
+    const firstName = document.getElementById('first_name').value.trim();
+    const lastName = document.getElementById('last_name').value.trim();
+    const email = document.getElementById('email').value.trim();
+    
+    if (!firstName || !lastName || !email) {
+        e.preventDefault();
+        alert('Por favor completa todos los campos requeridos (*)');
+        return false;
+    }
+    
+    // Validar email
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+        e.preventDefault();
+        alert('Por favor ingresa un correo electrónico válido');
+        return false;
+    }
+});
+</script>
+{% endblock %}

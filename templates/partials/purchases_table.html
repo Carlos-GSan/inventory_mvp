@@ -1,0 +1,111 @@
+<div class="table-responsive">
+    <table class="table table-striped table-hover">
+        <thead class="table-light">
+            <tr>
+                <th style="width: 80px;">ID</th>
+                <th>Proveedor</th>
+                <th style="width: 130px;">Fecha</th>
+                <th>Referencia</th>
+                <th style="width: 120px;" class="text-end">Total</th>
+                <th style="width: 100px;" class="text-center">Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for purchase in page_obj %}
+            <tr>
+                <td><strong>#{{ purchase.id }}</strong></td>
+                <td>{{ purchase.supplier.name }}</td>
+                <td>{{ purchase.purchased_at|date:"d/m/Y" }}</td>
+                <td>{{ purchase.ref|default:"-" }}</td>
+                <td class="text-end">
+                    <strong>${{ purchase.total|floatformat:2 }}</strong>
+                </td>
+                <td class="text-center">
+                    <a href="{% url 'purchase_detail' purchase.pk %}" class="btn btn-sm btn-primary">
+                        <i class="bi bi-eye"></i> Ver
+                    </a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="6" class="text-center text-muted py-4">
+                    <i class="bi bi-inbox" style="font-size: 2rem;"></i>
+                    <p class="mt-2">No hay compras registradas</p>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<!-- Paginación -->
+{% if page_obj.has_other_pages %}
+<div class="d-flex justify-content-between align-items-center mt-3">
+    <div class="text-muted">
+        Mostrando {{ page_obj.start_index }} - {{ page_obj.end_index }} de {{ page_obj.paginator.count }} registros
+    </div>
+    <nav>
+        <ul class="pagination mb-0">
+            {% if page_obj.has_previous %}
+            <li class="page-item">
+                <a class="page-link" 
+                   href="#" 
+                   hx-get="{% url 'purchase_list' %}?page=1&per_page={{ per_page }}{% if supplier_id %}&supplier={{ supplier_id }}{% endif %}"
+                   hx-target="#purchases-container"
+                   hx-include="#filter-form">
+                    Primera
+                </a>
+            </li>
+            <li class="page-item">
+                <a class="page-link" 
+                   href="#" 
+                   hx-get="{% url 'purchase_list' %}?page={{ page_obj.previous_page_number }}&per_page={{ per_page }}{% if supplier_id %}&supplier={{ supplier_id }}{% endif %}"
+                   hx-target="#purchases-container"
+                   hx-include="#filter-form">
+                    Anterior
+                </a>
+            </li>
+            {% endif %}
+            
+            {% for num in page_obj.paginator.page_range %}
+                {% if page_obj.number == num %}
+                <li class="page-item active">
+                    <span class="page-link">{{ num }}</span>
+                </li>
+                {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                <li class="page-item">
+                    <a class="page-link" 
+                       href="#" 
+                       hx-get="{% url 'purchase_list' %}?page={{ num }}&per_page={{ per_page }}{% if supplier_id %}&supplier={{ supplier_id }}{% endif %}"
+                       hx-target="#purchases-container"
+                       hx-include="#filter-form">
+                        {{ num }}
+                    </a>
+                </li>
+                {% endif %}
+            {% endfor %}
+            
+            {% if page_obj.has_next %}
+            <li class="page-item">
+                <a class="page-link" 
+                   href="#" 
+                   hx-get="{% url 'purchase_list' %}?page={{ page_obj.next_page_number }}&per_page={{ per_page }}{% if supplier_id %}&supplier={{ supplier_id }}{% endif %}"
+                   hx-target="#purchases-container"
+                   hx-include="#filter-form">
+                    Siguiente
+                </a>
+            </li>
+            <li class="page-item">
+                <a class="page-link" 
+                   href="#" 
+                   hx-get="{% url 'purchase_list' %}?page={{ page_obj.paginator.num_pages }}&per_page={{ per_page }}{% if supplier_id %}&supplier={{ supplier_id }}{% endif %}"
+                   hx-target="#purchases-container"
+                   hx-include="#filter-form">
+                    Última
+                </a>
+            </li>
+            {% endif %}
+        </ul>
+    </nav>
+</div>
+{% endif %}

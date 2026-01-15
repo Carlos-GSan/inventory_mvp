@@ -1,0 +1,97 @@
+{% load static %}
+
+<nav class="app-header navbar navbar-expand bg-body">
+<!--begin::Container-->
+<div class="container-fluid">
+    <!--begin::Start Navbar Links-->
+    <ul class="navbar-nav">
+    <li class="nav-item">
+        <a class="nav-link" data-lte-toggle="sidebar" href="#" role="button">
+        <i class="bi bi-list"></i>
+        </a>
+    </li>
+    <li class="nav-item d-none d-md-block"><a href="{% url 'dashboard' %}" class="nav-link">Inicio</a></li>
+    </ul>
+    <!--end::Start Navbar Links-->
+    <!--begin::End Navbar Links-->
+    <ul class="navbar-nav ms-auto">
+    <!--begin::Navbar Search-->
+    <li class="nav-item">
+        <a class="nav-link" data-widget="navbar-search" href="#" role="button">
+        <i class="bi bi-search"></i>
+        </a>
+    </li>
+    <!--end::Navbar Search-->
+    <!--begin::Fullscreen Toggle-->
+    <li class="nav-item">
+        <a class="nav-link" href="#" data-lte-toggle="fullscreen">
+        <i data-lte-icon="maximize" class="bi bi-arrows-fullscreen"></i>
+        <i data-lte-icon="minimize" class="bi bi-fullscreen-exit" style="display: none"></i>
+        </a>
+    </li>
+    <!--end::Fullscreen Toggle-->
+    <!--begin::User Menu Dropdown-->
+    <li class="nav-item dropdown user-menu">
+        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
+        {% if user.employee_profile.photo %}
+        <img
+            src="{{ user.employee_profile.photo.url }}"
+            class="user-image rounded-circle shadow"
+            alt="User Image"
+        />
+        {% else %}
+        <img
+            src="{% static 'libs/adminlte-4.0.0-rc4/dist/assets/img/user2-160x160.jpg' %}"
+            class="user-image rounded-circle shadow"
+            alt="User Image"
+        />
+        {% endif %}
+        <span class="d-none d-md-inline">{{ user.get_full_name|default:user.username }}</span>
+        </a>
+        <ul class="dropdown-menu dropdown-menu-lg dropdown-menu-end">
+        <!--begin::User Image-->
+        <li class="user-header text-bg-primary">
+            {% if user.employee_profile.photo %}
+            <img
+            src="{{ user.employee_profile.photo.url }}"
+            class="rounded-circle shadow"
+            alt="User Image"
+            />
+            {% else %}
+            <img
+            src="{% static 'libs/adminlte-4.0.0-rc4/dist/assets/img/user2-160x160.jpg' %}"
+            class="rounded-circle shadow"
+            alt="User Image"
+            />
+            {% endif %}
+            <p>
+            {{ user.get_full_name|default:user.username }}<br/>
+            <small>
+                {% if user.employee_profile.department %}
+                    {{ user.employee_profile.department }}{% if user.employee_profile.position %} - {{ user.employee_profile.position }}{% endif %} | 
+                {% endif %}
+                Miembro desde {{ user.date_joined|date:"M. Y" }}
+            </small>
+            </p>
+        </li>
+        <!--end::User Image-->
+        <!--begin::Menu Footer-->
+        <li class="user-footer">
+            <a href="{% url 'profile_edit' %}" class="btn btn-default btn-flat">Perfil</a>
+            <a href="#" class="btn btn-default btn-flat float-end" onclick="event.preventDefault(); document.getElementById('logout-form-navbar').submit();">Salir</a>
+        </li>
+        <!--end::Menu Footer-->
+        </ul>
+    </li>
+    <!--end::User Menu Dropdown-->
+    </ul>
+    <!--end::End Navbar Links-->
+</div>
+<!--end::Container-->
+</nav>
+
+<!--begin::Logout Form-->
+<form id="logout-form-navbar" method="post" action="{% url 'logout' %}" style="display: none;">
+  {% csrf_token %}
+</form>
+<!--end::Logout Form-->

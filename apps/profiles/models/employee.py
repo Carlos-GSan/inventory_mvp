@@ -26,6 +26,7 @@ class Employee(models.Model):
     department = models.CharField(max_length=100)
     hire_date = models.DateField()
     is_active = models.BooleanField(default=True)
+    photo = models.ImageField(upload_to='employee_photos/', blank=True, null=True)
     
     # Token de activación
     activation_token = models.CharField(max_length=100, blank=True, null=True)

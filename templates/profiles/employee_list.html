@@ -1,0 +1,127 @@
+{% extends 'base.html' %}
+
+{% block title %}Empleados - DisiTech{% endblock %}
+
+{% block content %}
+<div class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1 class="m-0">Gestión de Empleados</h1>
+            </div>
+            <div class="col-sm-6">
+                <div class="float-end">
+                    {% if perms.profiles.add_employee %}
+                    <a href="{% url 'employee_create' %}" class="btn btn-primary">
+                        <i class="bi bi-person-plus"></i> Nuevo Empleado
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="content">
+    <div class="container-fluid">
+        <!-- Mensajes -->
+        {% if messages %}
+        <div class="row">
+            <div class="col-12">
+                {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+        
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Listado de Empleados</h3>
+            </div>
+            <div class="card-body">
+                <!-- Filtros -->
+                <form id="filter-form" class="row g-3 mb-3">
+                    <div class="col-md-3">
+                        <label for="search" class="form-label">Buscar</label>
+                        <input 
+                            type="text" 
+                            class="form-control" 
+                            id="search" 
+                            name="search"
+                            value="{{ search }}"
+                            placeholder="Nombre, email..."
+                            hx-get="{% url 'employee_list' %}"
+                            hx-trigger="keyup changed delay:500ms"
+                            hx-target="#employees-container"
+                            hx-include="#filter-form"
+                        >
+                    </div>
+                    
+                    <div class="col-md-3">
+                        <label for="department" class="form-label">Departamento</label>
+                        <select 
+                            class="form-select" 
+                            id="department" 
+                            name="department"
+                            hx-get="{% url 'employee_list' %}"
+                            hx-trigger="change"
+                            hx-target="#employees-container"
+                            hx-include="#filter-form"
+                        >
+                            <option value="">Todos</option>
+                            {% for dept in departments %}
+                            <option value="{{ dept }}" {% if department == dept %}selected{% endif %}>{{ dept }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    
+                    <div class="col-md-3">
+                        <label for="status" class="form-label">Estado</label>
+                        <select 
+                            class="form-select" 
+                            id="status" 
+                            name="status"
+                            hx-get="{% url 'employee_list' %}"
+                            hx-trigger="change"
+                            hx-target="#employees-container"
+                            hx-include="#filter-form"
+                        >
+                            <option value="">Todos</option>
+                            <option value="active" {% if status == 'active' %}selected{% endif %}>Activos</option>
+                            <option value="inactive" {% if status == 'inactive' %}selected{% endif %}>Inactivos</option>
+                            <option value="with_access" {% if status == 'with_access' %}selected{% endif %}>Con acceso</option>
+                            <option value="without_access" {% if status == 'without_access' %}selected{% endif %}>Sin acceso</option>
+                        </select>
+                    </div>
+                    
+                    <div class="col-md-3">
+                        <label for="per_page" class="form-label">Mostrar</label>
+                        <select 
+                            class="form-select" 
+                            id="per_page" 
+                            name="per_page"
+                            hx-get="{% url 'employee_list' %}"
+                            hx-trigger="change"
+                            hx-target="#employees-container"
+                            hx-include="#filter-form"
+                        >
+                            <option value="10" {% if per_page == 10 %}selected{% endif %}>10 registros</option>
+                            <option value="20" {% if per_page == 20 %}selected{% endif %}>20 registros</option>
+                            <option value="45" {% if per_page == 45 %}selected{% endif %}>45 registros</option>
+                        </select>
+                    </div>
+                </form>
+
+                <!-- Tabla con HTMX -->
+                <div id="employees-container">
+                    {% include 'partials/employees_table.html' %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

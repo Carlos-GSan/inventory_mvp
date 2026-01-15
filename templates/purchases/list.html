@@ -3,43 +3,78 @@
 {% block title %}Compras - DisiTech{% endblock %}
 
 {% block content %}
-<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
-    <h1>Compras</h1>
-    {% if perms.inventory.add_purchase %}
-    <a href="{% url 'purchase_create' %}" class="btn btn-primary">+ Nueva Compra</a>
-    {% endif %}
+<div class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1 class="m-0">Compras</h1>
+            </div>
+            <div class="col-sm-6">
+                <div class="float-end">
+                    {% if perms.inventory.add_purchase %}
+                    <a href="{% url 'purchase_create' %}" class="btn btn-primary">
+                        <i class="bi bi-plus-circle"></i> Nueva Compra
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
-<div class="card">
-    <table>
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Proveedor</th>
-                <th>Fecha de Compra</th>
-                <th>Referencia</th>
-                <th>Total</th>
-                <th>Acciones</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for purchase in purchases %}
-            <tr>
-                <td><strong>#{{ purchase.id }}</strong></td>
-                <td>{{ purchase.supplier.name }}</td>
-                <td>{{ purchase.purchased_at|date:"d/m/Y" }}</td>
-                <td>{{ purchase.ref|default:"-" }}</td>
-                <td>${{ purchase.total|floatformat:2 }}</td>
-                <td>
-                    <a href="{% url 'purchase_detail' purchase.pk %}" class="btn btn-sm btn-primary">Ver Detalle</a>
-                </td>
-            </tr>
-            {% empty %}
-            <tr>
-                <td colspan="6" style="text-align: center; padding: 2rem; color: #64748b;">No hay compras registradas</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+<div class="content">
+    <div class="container-fluid">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Listado de Compras</h3>
+            </div>
+            <div class="card-body">
+                <!-- Filtros -->
+                <form id="filter-form" class="row g-3 mb-3">
+                    <div class="col-md-4">
+                        <label for="supplier" class="form-label">Proveedor</label>
+                        <select 
+                            class="form-select" 
+                            id="supplier" 
+                            name="supplier"
+                            hx-get="{% url 'purchase_list' %}"
+                            hx-trigger="change"
+                            hx-target="#purchases-container"
+                            hx-include="#filter-form"
+                        >
+                            <option value="">Todos los proveedores</option>
+                            {% for supplier in suppliers %}
+                            <option value="{{ supplier.id }}" {% if supplier_id|stringformat:"s" == supplier.id|stringformat:"s" %}selected{% endif %}>
+                                {{ supplier.name }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    
+                    <div class="col-md-3">
+                        <label for="per_page" class="form-label">Mostrar</label>
+                        <select 
+                            class="form-select" 
+                            id="per_page" 
+                            name="per_page"
+                            hx-get="{% url 'purchase_list' %}"
+                            hx-trigger="change"
+                            hx-target="#purchases-container"
+                            hx-include="#filter-form"
+                        >
+                            <option value="10" {% if per_page == 10 %}selected{% endif %}>10 registros</option>
+                            <option value="20" {% if per_page == 20 %}selected{% endif %}>20 registros</option>
+                            <option value="45" {% if per_page == 45 %}selected{% endif %}>45 registros</option>
+                        </select>
+                    </div>
+                </form>
+
+                <!-- Tabla con HTMX -->
+                <div id="purchases-container">
+                    {% include 'partials/purchases_table.html' %}
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 {% endblock %}

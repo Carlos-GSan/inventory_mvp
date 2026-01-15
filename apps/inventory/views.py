@@ -5,6 +5,7 @@ from django.core.exceptions import PermissionDenied
 from django.db.models import Q, Sum, F, Count
 from django.db import transaction
 from django.utils import timezone
+from django.core.paginator import Paginator
 from datetime import datetime, timedelta
 import re
 from .models.inventory import Category, InventoryItem
@@ -53,9 +54,10 @@ def dashboard(request):
             stock__lte=F('min_stock')
         ).select_related('category').order_by('stock')[:10]
         
-        recent_transactions = InventoryTxn.objects.select_related(
+        # Transacciones con filtros y paginación
+        transactions_qs = InventoryTxn.objects.select_related(
             'item', 'supplier', 'purchase', 'requisition'
-        ).order_by('-happened_at')[:10]
+        )
     else:
         # Usuario normal solo ve sus propias estadísticas
         stats = {
@@ -71,24 +73,70 @@ def dashboard(request):
         low_stock_items = []
         
         # Solo transacciones de sus requisiciones
-        recent_transactions = InventoryTxn.objects.filter(
+        transactions_qs = InventoryTxn.objects.filter(
             requisition__requested_by=request.user
         ).select_related(
             'item', 'supplier', 'purchase', 'requisition'
-        ).order_by('-happened_at')[:10]
+        )
+    
+    # Aplicar filtros a transacciones
+    item_filter = request.GET.get('item', '')
+    date_from = request.GET.get('date_from', '')
+    date_to = request.GET.get('date_to', '')
+    
+    if item_filter:
+        transactions_qs = transactions_qs.filter(
+            Q(item__sku__icontains=item_filter) | 
+            Q(item__description__icontains=item_filter)
+        )
+    
+    if date_from:
+        try:
+            date_from_obj = datetime.strptime(date_from, '%Y-%m-%d')
+            transactions_qs = transactions_qs.filter(happened_at__gte=date_from_obj)
+        except ValueError:
+            pass
+    
+    if date_to:
+        try:
+            date_to_obj = datetime.strptime(date_to, '%Y-%m-%d')
+            # Agregar 1 día para incluir todo el día seleccionado
+            date_to_obj = date_to_obj.replace(hour=23, minute=59, second=59)
+            transactions_qs = transactions_qs.filter(happened_at__lte=date_to_obj)
+        except ValueError:
+            pass
+    
+    transactions_qs = transactions_qs.order_by('-happened_at')
+    
+    # Paginación
+    paginator = Paginator(transactions_qs, 10)  # 10 transacciones por página
+    page_number = request.GET.get('page', 1)
+    recent_transactions = paginator.get_page(page_number)
+    
+    # Obtener todos los productos activos para el filtro
+    all_items = InventoryItem.objects.filter(active=True).values('id', 'sku', 'description').order_by('sku')
     
     context = {
         'stats': stats,
         'low_stock_items': low_stock_items,
         'recent_transactions': recent_transactions,
+        'all_items': all_items,
+        'item_filter': item_filter,
+        'date_from': date_from,
+        'date_to': date_to,
     }
+    
+    # Si es una petición HTMX, devolver solo la tabla de transacciones
+    if request.headers.get('HX-Request'):
+        return render(request, 'partials/transactions_table.html', context)
+    
     return render(request, 'dashboard.html', context)
 
 
 @login_required
 @permission_required('inventory.view_inventoryitem', raise_exception=True)
 def inventory_list(request):
-    """Lista de inventario con filtros"""
+    """Lista de inventario con filtros y paginación"""
     items = InventoryItem.objects.filter(active=True).select_related('category')
     
     # Filtros
@@ -103,12 +151,35 @@ def inventory_list(request):
     if category_id:
         items = items.filter(category_id=category_id)
     
+    items = items.order_by('sku')
+    
+    # Paginación
+    per_page = request.GET.get('per_page', '10')
+    try:
+        per_page_int = int(per_page)
+        if per_page_int not in [10, 20, 45]:
+            per_page_int = 10
+    except (ValueError, TypeError):
+        per_page_int = 10
+    
+    paginator = Paginator(items, per_page_int)
+    page_number = request.GET.get('page', 1)
+    items_page = paginator.get_page(page_number)
+    
     categories = Category.objects.all()
     
     context = {
-        'items': items.order_by('sku'),
+        'items': items_page,
         'categories': categories,
+        'search': search,
+        'category_id': category_id,
+        'per_page': per_page,
     }
+    
+    # Si es una petición HTMX, devolver solo la tabla
+    if request.headers.get('HX-Request'):
+        return render(request, 'partials/inventory_table.html', context)
+    
     return render(request, 'inventory/list.html', context)
 
 
@@ -184,6 +255,45 @@ def inventory_update(request, pk):
 
 
 @login_required
+@permission_required('inventory.view_inventoryitem', raise_exception=True)
+def inventory_print_label(request, pk):
+    """Imprimir etiqueta con código de barras del producto"""
+    item = get_object_or_404(InventoryItem, pk=pk, active=True)
+    
+    context = {
+        'item': item,
+    }
+    return render(request, 'inventory/print_label.html', context)
+
+
+@login_required
+@permission_required('inventory.view_inventoryitem', raise_exception=True)
+def inventory_print_labels(request):
+    """Imprimir múltiples etiquetas con códigos de barras"""
+    ids_str = request.GET.get('ids', '')
+    
+    if not ids_str:
+        messages.error(request, 'No se seleccionaron productos')
+        return redirect('inventory_list')
+    
+    try:
+        ids = [int(id_str.strip()) for id_str in ids_str.split(',') if id_str.strip()]
+        items = InventoryItem.objects.filter(pk__in=ids, active=True).select_related('category')
+        
+        if not items.exists():
+            messages.error(request, 'No se encontraron productos válidos')
+            return redirect('inventory_list')
+        
+        context = {
+            'items': items,
+        }
+        return render(request, 'inventory/print_labels.html', context)
+    except ValueError:
+        messages.error(request, 'IDs de productos inválidos')
+        return redirect('inventory_list')
+
+
+@login_required
 @permission_required('inventory.change_inventoryitem', raise_exception=True)
 def inventory_adjust(request, pk):
     """Ajustar stock de un producto"""
@@ -219,14 +329,45 @@ def inventory_adjust(request, pk):
 @login_required
 @permission_required('inventory.view_purchase', raise_exception=True)
 def purchase_list(request):
-    """Lista de compras"""
+    """Lista de compras con filtros y paginación"""
     purchases = Purchase.objects.select_related('supplier').prefetch_related('lines').order_by('-purchased_at')
+    
+    # Filtro por proveedor
+    supplier_id = request.GET.get('supplier', '')
+    if supplier_id:
+        purchases = purchases.filter(supplier_id=supplier_id)
     
     # Calcular total de cada compra
     for purchase in purchases:
         purchase.total = sum(line.qty * line.unit_price for line in purchase.lines.all())
     
-    context = {'purchases': purchases}
+    # Paginación
+    per_page = request.GET.get('per_page', '10')
+    try:
+        per_page = int(per_page)
+        if per_page not in [10, 20, 45]:
+            per_page = 10
+    except ValueError:
+        per_page = 10
+    
+    paginator = Paginator(purchases, per_page)
+    page_number = request.GET.get('page', 1)
+    page_obj = paginator.get_page(page_number)
+    
+    # Lista de proveedores para el filtro
+    suppliers = Supplier.objects.order_by('name')
+    
+    context = {
+        'page_obj': page_obj,
+        'per_page': per_page,
+        'suppliers': suppliers,
+        'supplier_id': supplier_id,
+    }
+    
+    # Si es petición HTMX, devolver solo la tabla
+    if request.headers.get('HX-Request'):
+        return render(request, 'partials/purchases_table.html', context)
+    
     return render(request, 'purchases/list.html', context)
 
 
@@ -324,7 +465,7 @@ def purchase_detail(request, pk):
 @login_required
 @permission_required('inventory.view_requisition', raise_exception=True)
 def requisition_list(request):
-    """Lista de requisiciones"""
+    """Lista de requisiciones con filtros y paginación"""
     if request.user.is_staff:
         # Admin ve todas las requisiciones
         requisitions = Requisition.objects.select_related('requested_by').order_by('-requested_at')
@@ -333,7 +474,45 @@ def requisition_list(request):
         requisitions = Requisition.objects.filter(
             requested_by=request.user
         ).select_related('requested_by').order_by('-requested_at')
-    context = {'requisitions': requisitions}
+    
+    # Filtro por solicitante (solo para staff)
+    solicitante_id = request.GET.get('solicitante', '')
+    if request.user.is_staff and solicitante_id:
+        requisitions = requisitions.filter(requested_by_id=solicitante_id)
+    
+    # Paginación
+    per_page = request.GET.get('per_page', '10')
+    try:
+        per_page = int(per_page)
+        if per_page not in [10, 20, 45]:
+            per_page = 10
+    except ValueError:
+        per_page = 10
+    
+    paginator = Paginator(requisitions, per_page)
+    page_number = request.GET.get('page', 1)
+    page_obj = paginator.get_page(page_number)
+    
+    # Lista de solicitantes para el filtro (solo para staff)
+    solicitantes = None
+    if request.user.is_staff:
+        from django.contrib.auth import get_user_model
+        User = get_user_model()
+        solicitantes = User.objects.filter(
+            requisitions__isnull=False
+        ).distinct().order_by('first_name', 'last_name', 'username')
+    
+    context = {
+        'page_obj': page_obj,
+        'per_page': per_page,
+        'solicitantes': solicitantes,
+        'solicitante_id': solicitante_id,
+    }
+    
+    # Si es petición HTMX, devolver solo la tabla
+    if request.headers.get('HX-Request'):
+        return render(request, 'partials/requisitions_table.html', context)
+    
     return render(request, 'requisitions/list.html', context)
 
 

@@ -1,0 +1,68 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}DisiTech - Sistema de Inventario{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    {% if user.is_authenticated %}
+    <nav class="navbar">
+        <a href="{% url 'dashboard' %}" class="navbar-brand">
+            {% if logo_url %}
+            <img src="{{ logo_url }}" alt="Logo">
+            {% endif %}
+            <span>DisiTech</span>
+        </a>
+        <div class="navbar-menu">
+            <a href="{% url 'dashboard' %}">Dashboard</a>
+            {% if perms.inventory.view_inventoryitem %}
+            <a href="{% url 'inventory_list' %}">Inventario</a>
+            {% endif %}
+            {% if perms.inventory.view_purchase %}
+            <a href="{% url 'purchase_list' %}">Compras</a>
+            {% endif %}
+            {% if perms.inventory.view_requisition %}
+            <a href="{% url 'requisition_list' %}">Requisiciones</a>
+            {% endif %}
+        </div>
+        <div class="navbar-user">
+            <span>{{ user.username }}</span>
+            <form method="post" action="{% url 'logout' %}" style="display: inline;">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-sm btn-outline">Cerrar Sesión</button>
+            </form>
+        </div>
+    </nav>
+    {% endif %}
+
+    {% if messages %}
+    <div class="messages">
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}">
+            {{ message }}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <main class="container">
+        {% block content %}{% endblock %}
+    </main>
+
+    <script>
+        // Auto-hide messages after 5 seconds
+        setTimeout(() => {
+            const messages = document.querySelectorAll('.alert');
+            messages.forEach(msg => {
+                msg.style.animation = 'slideOut 0.3s ease';
+                setTimeout(() => msg.remove(), 300);
+            });
+        }, 5000);
+    </script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

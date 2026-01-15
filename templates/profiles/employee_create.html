@@ -1,0 +1,206 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Nuevo Empleado - DisiTech{% endblock %}
+
+{% block content %}
+<div class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1 class="m-0">Nuevo Empleado</h1>
+            </div>
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-end">
+                    <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Dashboard</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'employee_list' %}">Empleados</a></li>
+                    <li class="breadcrumb-item active">Nuevo</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="content">
+    <div class="container-fluid">
+        <!-- Mensajes -->
+        {% if messages %}
+        <div class="row">
+            <div class="col-12">
+                {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+        
+        <form method="post" enctype="multipart/form-data" id="employeeForm">
+            {% csrf_token %}
+            
+            <div class="row">
+                <div class="col-md-4">
+                    <!-- Foto -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title"><i class="bi bi-camera"></i> Foto del Empleado</h3>
+                        </div>
+                        <div class="card-body text-center">
+                            <div class="mb-3">
+                                <div id="photoPreview" class="d-inline-block rounded-circle bg-secondary d-flex align-items-center justify-content-center" style="width: 200px; height: 200px; border: 4px solid #dee2e6;">
+                                    <i class="bi bi-person-circle text-white" style="font-size: 100px;"></i>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="photo" class="form-label">Subir Foto</label>
+                                <input type="file" class="form-control" id="photo" name="photo" accept="image/*">
+                                <small class="text-muted">Formatos: JPG, PNG. Máx 5MB</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-8">
+                    <!-- Información Personal -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title"><i class="bi bi-person"></i> Información Personal</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="first_name" class="form-label">Nombre(s) <span class="text-danger">*</span></label>
+                                        <input type="text" class="form-control" id="first_name" name="first_name" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="last_name" class="form-label">Apellido(s) <span class="text-danger">*</span></label>
+                                        <input type="text" class="form-control" id="last_name" name="last_name" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="email" class="form-label">Correo Electrónico <span class="text-danger">*</span></label>
+                                        <input type="email" class="form-control" id="email" name="email" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="phone" class="form-label">Teléfono</label>
+                                        <input type="tel" class="form-control" id="phone" name="phone" placeholder="+52 1234567890">
+                                        <small class="text-muted">Formato internacional: +52 1234567890</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Información Laboral -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title"><i class="bi bi-briefcase"></i> Información Laboral</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="mb-3">
+                                        <label for="position" class="form-label">Puesto <span class="text-danger">*</span></label>
+                                        <input type="text" class="form-control" id="position" name="position" placeholder="Ej: Administrador" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="mb-3">
+                                        <label for="department" class="form-label">Departamento <span class="text-danger">*</span></label>
+                                        <input type="text" class="form-control" id="department" name="department" placeholder="Ej: Sistemas" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="mb-3">
+                                        <label for="hire_date" class="form-label">Fecha de Contratación <span class="text-danger">*</span></label>
+                                        <input type="date" class="form-control" id="hire_date" name="hire_date" required>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Invitación -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title"><i class="bi bi-envelope"></i> Invitación de Acceso</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="send_invitation" name="send_invitation" checked>
+                                <label class="form-check-label" for="send_invitation">
+                                    Enviar invitación por correo electrónico
+                                </label>
+                                <small class="form-text text-muted d-block">
+                                    Se enviará un enlace al empleado para que active su cuenta y cree sus credenciales de acceso.
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Botones de Acción -->
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="d-flex gap-2">
+                                <button type="submit" class="btn btn-success">
+                                    <i class="bi bi-check-circle"></i> Crear Empleado
+                                </button>
+                                <a href="{% url 'employee_list' %}" class="btn btn-secondary">
+                                    <i class="bi bi-x-circle"></i> Cancelar
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+// Preview de la imagen antes de subir
+document.getElementById('photo').addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if (file) {
+        // Validar tamaño (5MB)
+        if (file.size > 5 * 1024 * 1024) {
+            alert('La imagen es muy grande. El tamaño máximo es 5MB.');
+            e.target.value = '';
+            return;
+        }
+        
+        // Validar tipo
+        if (!file.type.match('image.*')) {
+            alert('Por favor selecciona una imagen válida.');
+            e.target.value = '';
+            return;
+        }
+        
+        // Mostrar preview
+        const reader = new FileReader();
+        reader.onload = function(event) {
+            const preview = document.getElementById('photoPreview');
+            const img = document.createElement('img');
+            img.id = 'photoPreview';
+            img.src = event.target.result;
+            img.className = 'img-fluid rounded-circle';
+            img.style.cssText = 'width: 200px; height: 200px; object-fit: cover; border: 4px solid #dee2e6;';
+            preview.parentNode.replaceChild(img, preview);
+        };
+        reader.readAsDataURL(file);
+    }
+});
+
+// Establecer fecha de hoy por defecto
+document.getElementById('hire_date').valueAsDate = new Date();
+</script>
+{% endblock %}

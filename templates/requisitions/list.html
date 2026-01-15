@@ -3,41 +3,84 @@
 {% block title %}Requisiciones - DisiTech{% endblock %}
 
 {% block content %}
-<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
-    <h1>Requisiciones</h1>
-    {% if perms.inventory.add_requisition %}
-    <a href="{% url 'requisition_create' %}" class="btn btn-primary">+ Nueva Requisición</a>
-    {% endif %}
+<div class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1 class="m-0">Requisiciones</h1>
+            </div>
+            <div class="col-sm-6">
+                <div class="float-end">
+                    {% if perms.inventory.add_requisition %}
+                    <a href="{% url 'requisition_create' %}" class="btn btn-primary">
+                        <i class="bi bi-plus-circle"></i> Nueva Requisición
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
-<div class="card">
-    <table>
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Solicitante</th>
-                <th>Fecha de Solicitud</th>
-                <th>Nota</th>
-                <th>Acciones</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for req in requisitions %}
-            <tr>
-                <td><strong>#{{ req.id }}</strong></td>
-                <td>{{ req.requested_by.username }}</td>
-                <td>{{ req.requested_at|date:"d/m/Y" }}</td>
-                <td>{{ req.note|default:"-" }}</td>
-                <td>
-                    <a href="{% url 'requisition_detail' req.pk %}" class="btn btn-sm btn-primary">Ver Detalle</a>
-                </td>
-            </tr>
-            {% empty %}
-            <tr>
-                <td colspan="5" style="text-align: center; padding: 2rem; color: #64748b;">No hay requisiciones registradas</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+<div class="content">
+    <div class="container-fluid">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Listado de Requisiciones</h3>
+            </div>
+            <div class="card-body">
+                <!-- Filtros -->
+                <form id="filter-form" class="row g-3 mb-3">
+                    {% if user.is_staff and solicitantes %}
+                    <div class="col-md-4">
+                        <label for="solicitante" class="form-label">Solicitante</label>
+                        <select 
+                            class="form-select" 
+                            id="solicitante" 
+                            name="solicitante"
+                            hx-get="{% url 'requisition_list' %}"
+                            hx-trigger="change"
+                            hx-target="#requisitions-container"
+                            hx-include="#filter-form"
+                        >
+                            <option value="">Todos los solicitantes</option>
+                            {% for user in solicitantes %}
+                            <option value="{{ user.id }}" {% if solicitante_id|stringformat:"s" == user.id|stringformat:"s" %}selected{% endif %}>
+                                {% if user.first_name and user.last_name %}
+                                    {{ user.first_name }} {{ user.last_name }}
+                                {% else %}
+                                    {{ user.username }}
+                                {% endif %}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    {% endif %}
+                    
+                    <div class="col-md-3">
+                        <label for="per_page" class="form-label">Mostrar</label>
+                        <select 
+                            class="form-select" 
+                            id="per_page" 
+                            name="per_page"
+                            hx-get="{% url 'requisition_list' %}"
+                            hx-trigger="change"
+                            hx-target="#requisitions-container"
+                            hx-include="#filter-form"
+                        >
+                            <option value="10" {% if per_page == 10 %}selected{% endif %}>10 registros</option>
+                            <option value="20" {% if per_page == 20 %}selected{% endif %}>20 registros</option>
+                            <option value="45" {% if per_page == 45 %}selected{% endif %}>45 registros</option>
+                        </select>
+                    </div>
+                </form>
+
+                <!-- Tabla con HTMX -->
+                <div id="requisitions-container">
+                    {% include 'partials/requisitions_table.html' %}
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 {% endblock %}
