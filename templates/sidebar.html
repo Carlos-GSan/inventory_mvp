@@ -1,6 +1,6 @@
 {% load static %}
 
-<aside class="app-sidebar bg-body-secondary shadow" data-bs-theme="dark">
+<aside class="app-sidebar bg-body-secondary shadow-lg" data-bs-theme="dark">
   <!--begin::Sidebar Brand-->
   <div class="sidebar-brand">
     <!--begin::Brand Link-->
@@ -11,7 +11,7 @@
         <img
             src="{{ logo_url }}"
             alt="DisiTech Logo"
-            class="brand-image opacity-75 shadow"
+            class="brand-image opacity-100 shadow"
         />
       {% else %}
         <div
@@ -109,22 +109,33 @@
 
         <li class="nav-header">USUARIO</li>
         
-        <!--begin::User Info-->
+        <!--begin::User Menu (Collapsible)-->
         <li class="nav-item">
-          <a href="{% url 'profile_edit' %}" class="nav-link">
-            <i class="nav-icon bi bi-person-circle"></i>
-            <p>Mi Perfil</p>
+          <a href="#" class="nav-link" data-bs-toggle="collapse" data-bs-target="#userMenu" aria-expanded="false">
+            <i class="nav-icon bi bi-person-gear"></i>
+            <p>
+              Configuración
+              <i class="nav-arrow bi bi-chevron-right ms-auto"></i>
+            </p>
           </a>
+          <ul class="nav nav-treeview collapse" id="userMenu">
+            <li class="nav-item">
+              <a href="{% url 'profile_edit' %}" class="nav-link">
+          <i class="nav-icon bi bi-person-circle"></i>
+          <p>Mi Perfil</p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="#" class="nav-link" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+          <i class="nav-icon bi bi-box-arrow-right"></i>
+          <p>Cerrar Sesión</p>
+              </a>
+            </li>
+          </ul>
         </li>
-        <!--end::User Info-->
+        <!--end::User Menu (Collapsible)-->
 
-        <!--begin::Logout-->
-        <li class="nav-item">
-          <a href="#" class="nav-link" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-            <i class="nav-icon bi bi-box-arrow-right"></i>
-            <p>Cerrar Sesión</p>
-          </a>
-        </li>
+        <!--end::Logout-->
         <!--end::Logout-->
       </ul>
       <!--end::Sidebar Menu-->

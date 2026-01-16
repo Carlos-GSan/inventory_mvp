@@ -85,45 +85,47 @@
 
 {% if perms.inventory.view_inventoryitem %}
 <div class="card mb-4">
-    <div class="card-header">
-        <h3 class="card-title">Productos con Stock Bajo</h3>
+  <div class="card-header">
+    <h3 class="card-title">Productos con Stock Bajo</h3>
+  </div>
+  <div class="card-body p-0">
+    {% if low_stock_items %}
+    <div class="table-responsive">
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>SKU</th>
+            <th>Descripción</th>
+            <th>Categoría</th>
+            <th>Stock Actual</th>
+            <th>Stock Mínimo</th>
+            <th>Estado</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for item in low_stock_items %}
+          <tr>
+            <td><strong>{{ item.sku }}</strong></td>
+            <td>{{ item.description }}</td>
+            <td>{{ item.category.name }}</td>
+            <td>{{ item.stock }}</td>
+            <td>{{ item.min_stock }}</td>
+            <td>
+              {% if item.stock == 0 %}
+              <span class="badge text-bg-danger">Sin Stock</span>
+              {% else %}
+              <span class="badge text-bg-warning">Stock Bajo</span>
+              {% endif %}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
     </div>
-    <div class="card-body p-0">
-        {% if low_stock_items %}
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th>SKU</th>
-                    <th>Descripción</th>
-                    <th>Categoría</th>
-                    <th>Stock Actual</th>
-                    <th>Stock Mínimo</th>
-                    <th>Estado</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for item in low_stock_items %}
-                <tr>
-                    <td><strong>{{ item.sku }}</strong></td>
-                    <td>{{ item.description }}</td>
-                    <td>{{ item.category.name }}</td>
-                    <td>{{ item.stock }}</td>
-                    <td>{{ item.min_stock }}</td>
-                    <td>
-                        {% if item.stock == 0 %}
-                        <span class="badge text-bg-danger">Sin Stock</span>
-                        {% else %}
-                        <span class="badge text-bg-warning">Stock Bajo</span>
-                        {% endif %}
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-        {% else %}
-        <p class="text-center text-muted p-4">No hay productos con stock bajo</p>
-        {% endif %}
-    </div>
+    {% else %}
+    <p class="text-center text-muted p-4">No hay productos con stock bajo</p>
+    {% endif %}
+  </div>
 </div>
 {% endif %}
 

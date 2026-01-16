@@ -22,6 +22,18 @@
 
 <div class="content">
     <div class="container-fluid">
+        <!-- Toast Container -->
+        <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 9999;">
+            <div id="errorToast" class="toast align-items-center text-bg-danger border-0" role="alert" aria-live="assertive" aria-atomic="true">
+                <div class="d-flex">
+                    <div class="toast-body" id="toastMessage">
+                        Error
+                    </div>
+                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                </div>
+            </div>
+        </div>
+        
         <!-- Mensajes -->
         {% if messages %}
         <div class="row">
@@ -59,8 +71,11 @@
                             
                             <div class="mb-3">
                                 <label for="photo" class="form-label">Cambiar Foto</label>
-                                <input type="file" class="form-control" id="photo" name="photo" accept="image/*">
-                                <small class="text-muted">Formatos: JPG, PNG. Máx 5MB</small>
+                                <input type="file" class="form-control mb-2" id="photo" name="photo" accept="image/*">
+                                <button type="button" class="btn btn-outline-primary btn-sm" id="openCameraBtn">
+                                    <i class="bi bi-camera"></i> Tomar Foto
+                                </button>
+                                <small class="text-muted d-block mt-2">Formatos: JPG, PNG. Máx 5MB</small>
                             </div>
                         </div>
                     </div>
@@ -169,20 +184,29 @@
 </div>
 
 <script>
+// Función para mostrar toast
+function showToast(message) {
+    const toastEl = document.getElementById('errorToast');
+    const toastMessage = document.getElementById('toastMessage');
+    toastMessage.textContent = message;
+    const toast = new bootstrap.Toast(toastEl);
+    toast.show();
+}
+
 // Preview de la imagen antes de subir
 document.getElementById('photo').addEventListener('change', function(e) {
     const file = e.target.files[0];
     if (file) {
         // Validar tamaño (5MB)
         if (file.size > 5 * 1024 * 1024) {
-            alert('La imagen es muy grande. El tamaño máximo es 5MB.');
+            showToast('La imagen es muy grande. El tamaño máximo es 5MB.');
             e.target.value = '';
             return;
         }
         
         // Validar tipo
         if (!file.type.match('image.*')) {
-            alert('Por favor selecciona una imagen válida.');
+            showToast('Por favor selecciona una imagen válida (JPG, PNG).');
             e.target.value = '';
             return;
         }
@@ -214,7 +238,7 @@ document.getElementById('profileForm').addEventListener('submit', function(e) {
     
     if (!firstName || !lastName || !email) {
         e.preventDefault();
-        alert('Por favor completa todos los campos requeridos (*)');
+        showToast('Por favor completa todos los campos requeridos (*)');
         return false;
     }
     
@@ -222,9 +246,138 @@ document.getElementById('profileForm').addEventListener('submit', function(e) {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
         e.preventDefault();
-        alert('Por favor ingresa un correo electrónico válido');
+        showToast('Por favor ingresa un correo electrónico válido');
         return false;
     }
+});
+</script>
+
+<!-- Modal de Cámara -->
+<div class="modal fade" id="cameraModal" tabindex="-1" aria-labelledby="cameraModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="cameraModalLabel">
+                    <i class="bi bi-camera"></i> Tomar Foto
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center">
+                <video id="camera" width="100%" height="auto" autoplay style="max-height: 400px;"></video>
+                <canvas id="canvas" style="display:none;"></canvas>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="bi bi-x-circle"></i> Cancelar
+                </button>
+                <button type="button" class="btn btn-primary" id="captureBtn">
+                    <i class="bi bi-camera-fill"></i> Capturar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+let stream = null;
+const cameraModal = document.getElementById('cameraModal');
+const video = document.getElementById('camera');
+const canvas = document.getElementById('canvas');
+const captureBtn = document.getElementById('captureBtn');
+const openCameraBtn = document.getElementById('openCameraBtn');
+let modalInstance = null;
+
+// Verificar y abrir cámara al hacer clic en el botón
+openCameraBtn.addEventListener('click', async function() {
+    // Verificar si el navegador soporta getUserMedia
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        showToast('Tu navegador no soporta acceso a la cámara o necesitas usar HTTPS');
+        return;
+    }
+    
+    // Verificar HTTPS en móviles
+    if (location.protocol === 'http:' && location.hostname !== 'localhost' && location.hostname !== '127.0.0.1') {
+        showToast('Debes acceder desde HTTPS para usar la cámara en dispositivos móviles');
+        return;
+    }
+    
+    // Abrir modal y solicitar cámara
+    modalInstance = new bootstrap.Modal(cameraModal);
+    modalInstance.show();
+});
+
+// Iniciar cámara cuando se abre el modal
+cameraModal.addEventListener('shown.bs.modal', async function() {
+    try {
+        stream = await navigator.mediaDevices.getUserMedia({ 
+            video: { 
+                width: { ideal: 1280 },
+                height: { ideal: 720 },
+                facingMode: 'user'
+            } 
+        });
+        video.srcObject = stream;
+    } catch (error) {
+        let errorMessage = '';
+        
+        if (error.name === 'NotAllowedError') {
+            errorMessage = 'Necesitas dar permisos para usar la cámara.';
+        } else if (error.name === 'NotFoundError') {
+            errorMessage = 'No se encontró ninguna cámara en el dispositivo.';
+        } else if (error.name === 'NotReadableError') {
+            errorMessage = 'La cámara está siendo usada por otra aplicación.';
+        } else {
+            errorMessage = error.message;
+        }
+        
+        console.error('Error al acceder a la cámara:', error);
+        modalInstance.hide();
+        showToast(errorMessage);
+    }
+});
+
+// Detener cámara cuando se cierra el modal
+cameraModal.addEventListener('hide.bs.modal', function() {
+    if (stream) {
+        stream.getTracks().forEach(track => track.stop());
+        stream = null;
+        video.srcObject = null;
+    }
+});
+
+// Capturar foto
+captureBtn.addEventListener('click', function() {
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    const context = canvas.getContext('2d');
+    context.drawImage(video, 0, 0);
+    
+    canvas.toBlob(function(blob) {
+        const file = new File([blob], "photo.jpg", { type: "image/jpeg" });
+        const dataTransfer = new DataTransfer();
+        dataTransfer.items.add(file);
+        document.getElementById('photo').files = dataTransfer.files;
+        
+        // Mostrar preview
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const preview = document.getElementById('photoPreview');
+            if (preview.tagName === 'IMG') {
+                preview.src = e.target.result;
+            } else {
+                const img = document.createElement('img');
+                img.id = 'photoPreview';
+                img.src = e.target.result;
+                img.className = 'img-fluid rounded-circle';
+                img.style.cssText = 'width: 200px; height: 200px; object-fit: cover; border: 4px solid #dee2e6;';
+                preview.parentNode.replaceChild(img, preview);
+            }
+        };
+        reader.readAsDataURL(blob);
+        
+        // Cerrar modal
+        bootstrap.Modal.getInstance(cameraModal).hide();
+    }, 'image/jpeg', 0.9);
 });
 </script>
 {% endblock %}
