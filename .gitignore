@@ -6,6 +6,7 @@ dist/
 wheels/
 *.egg-info
 exceles_base/
+media/
 
 # Virtual environments
 .venv
