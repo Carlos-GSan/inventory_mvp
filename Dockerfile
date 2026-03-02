@@ -46,6 +46,9 @@ ENV VIRTUAL_ENV=/app/.venv \
     PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1
 
+# Hacer ejecutable el entrypoint
+RUN chmod +x /app/entrypoint.sh
+
 EXPOSE 8000
 
 # Comando por defecto (puede sobreescribirse en docker-compose)
