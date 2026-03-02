@@ -49,4 +49,4 @@ ENV VIRTUAL_ENV=/app/.venv \
 EXPOSE 8000
 
 # Comando por defecto (puede sobreescribirse en docker-compose)
-CMD ["gunicorn", "config.wsgi:application", "--bind", "0.0.0.0:8000", "--workers", "3"]
+ENTRYPOINT ["/app/entrypoint.sh"]

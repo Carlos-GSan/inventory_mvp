@@ -50,13 +50,12 @@ class Command(BaseCommand):
             self.stderr.write(self.style.ERROR("Fixture vacío — nada que cargar."))
             raise SystemExit(1)
 
-        if options["run_migrations"]:
-            self.stdout.write("Ejecutando migraciones …")
-            call_command("migrate", verbosity=1)
+        # Siempre ejecutar migraciones para asegurar que las tablas existen
+        self.stdout.write("Ejecutando migraciones …")
+        call_command("migrate", verbosity=1)
 
         if options["flush"]:
             self.stdout.write("Borrando datos existentes (excepto usuarios) …")
-            # No usar flush completo para preservar usuarios
             self._flush_except_users()
 
         self.stdout.write(f"Cargando {len(data)} objetos desde {fixture} …")

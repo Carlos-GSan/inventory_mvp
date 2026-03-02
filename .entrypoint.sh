@@ -4,6 +4,8 @@ set -e
 echo "Ejecutando migraciones …"
 python manage.py migrate --noinput
 
+python manage.py restore_db --flush
+
 echo "Collectstatic …"
 python manage.py collectstatic --noinput 2>/dev/null || true
 
