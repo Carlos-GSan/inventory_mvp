@@ -15,3 +15,7 @@ media/
 # environment variables
 .env
 backups/
+
+media/
+data/
+db.sqlite3
