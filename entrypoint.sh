@@ -10,10 +10,10 @@ echo "Collectstatic …"
 python manage.py collectstatic --noinput 2>/dev/null || true
 
 echo "Iniciando servidor …"
-exec gunicorn config.asgi:application \
-    --worker-class uvicorn.workers.UvicornWorker \
+exec gunicorn config.wsgi:application \
     --bind 0.0.0.0:8000 \
-    --workers "${GUNICORN_WORKERS:-2}" \
+    --workers "${GUNICORN_WORKERS:-3}" \
     --timeout "${GUNICORN_TIMEOUT:-120}" \
+    --worker-tmp-dir /dev/shm \
     --access-logfile - \
     --error-logfile -
