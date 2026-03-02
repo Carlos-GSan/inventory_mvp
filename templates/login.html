@@ -5,57 +5,111 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{% static 'css/login.css' %}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <title>Login - DisiTech</title>
 </head>
 <body>
-    <div class="login-container">
-        <div class="logo-container">
-            {% if logo_url %}
-            <img src="{{ logo_url }}" alt="Logo de la empresa">
-            {% else %}
-            <div style="width: 120px; height: 120px; margin: 0 auto; background: linear-gradient(135deg, #1a1a1a 0%, #0a0a0a 100%); border-radius: 0.5rem; display: flex; align-items: center; justify-content: center; font-size: 2.5rem; color: #cd7f32; font-weight: 700; border: 3px solid #b91c1c; box-shadow: 0 4px 15px rgba(0,0,0,0.3);">DT</div>
-            {% endif %}
+    <div class="login-wrapper">
+        <!-- Panel Izquierdo - Visual -->
+        <div class="login-brand-panel">
+            <div class="brand-overlay"></div>
+            <div class="brand-content">
+                <div class="brand-icon">
+                    <i class="bi bi-gear-wide-connected"></i>
+                </div>
+                <h2 class="brand-title">DisiTech</h2>
+                <p class="brand-tagline">Servicios Industriales de Ingeniería</p>
+
+                <div class="brand-features">
+                    <div class="feature-item">
+                        <div class="feature-icon"><i class="bi bi-boxes"></i></div>
+                        <div class="feature-text">
+                            <strong>Inventario</strong>
+                            <span>Control total de materiales y equipos</span>
+                        </div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon"><i class="bi bi-clipboard-data"></i></div>
+                        <div class="feature-text">
+                            <strong>Requisiciones</strong>
+                            <span>Gestión de compras y proveedores</span>
+                        </div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon"><i class="bi bi-people-fill"></i></div>
+                        <div class="feature-text">
+                            <strong>Personal</strong>
+                            <span>Administración de empleados e ingenieros</span>
+                        </div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon"><i class="bi bi-bar-chart-line-fill"></i></div>
+                        <div class="feature-text">
+                            <strong>Reportes</strong>
+                            <span>Análisis y trazabilidad en tiempo real</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="brand-footer">
+                <small>Plataforma ERP Industrial</small>
+            </div>
         </div>
 
-        <div class="industrial-accent">
-            <span></span>
-            <span></span>
-            <span></span>
-        </div>
+        <!-- Panel Derecho - Formulario -->
+        <div class="login-form-panel">
+            <div class="form-panel-inner">
+                <div class="logo-container">
+                    {% if logo_url %}
+                    <img src="{{ logo_url }}" alt="Logo de la empresa">
+                    {% else %}
+                    <div class="logo-fallback">DT</div>
+                    {% endif %}
+                </div>
 
-        <h1 class="login-title">Bienvenido</h1>
-        <p class="login-subtitle">CRM</p>
+                <h1 class="login-title">Iniciar sesión</h1>
+                <p class="login-subtitle">Acceso restringido a personal autorizado</p>
 
+                <form method="post">
+                    {% csrf_token %}
+                    {% if form.non_field_errors %}
+                        <script>
+                            document.addEventListener('DOMContentLoaded', function() {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Error de autenticación',
+                                    html: '{% for error in form.non_field_errors %}{{ error }}<br>{% endfor %}',
+                                    confirmButtonText: 'Aceptar',
+                                    confirmButtonColor: '#b91c1c'
+                                });
+                            });
+                        </script>
+                    {% endif %}
+                    <div class="form-group">
+                        <label for="username" class="form-label">Usuario</label>
+                        <div class="input-wrapper">
+                            <i class="bi bi-person-fill input-icon"></i>
+                            <input type="text" id="username" name="username" class="form-control" placeholder="Ingresa tu usuario" required autofocus>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="password" class="form-label">Contraseña</label>
+                        <div class="input-wrapper">
+                            <i class="bi bi-lock-fill input-icon"></i>
+                            <input type="password" id="password" name="password" class="form-control" placeholder="••••••••" required>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn-login">
+                        <span>Ingresar</span>
+                        <i class="bi bi-arrow-right"></i>
+                    </button>
+                </form>
 
-        <form method="post">
-            {% csrf_token %}
-            {% if form.non_field_errors %}
-                <script>
-                    document.addEventListener('DOMContentLoaded', function() {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Error de autenticación',
-                            html: '{% for error in form.non_field_errors %}{{ error }}<br>{% endfor %}',
-                            confirmButtonText: 'Aceptar',
-                            confirmButtonColor: '#b91c1c'
-                        });
-                    });
-                </script>
-            {% endif %}
-            <div class="form-group">
-                <label for="username" class="form-label">Usuario</label>
-                <input type="text" id="username" name="username" class="form-control" required autofocus>
+                <div class="form-footer">
+                    © {% now "Y" %} DisiTech. Todos los derechos reservados.
+                </div>
             </div>
-            <div class="form-group">
-                <label for="password" class="form-label">Contraseña</label>
-                <input type="password" id="password" name="password" class="form-control" required>
-            </div>
-            <button type="submit" class="btn-login">Iniciar Sesión</button>
-        </form>
-
-        <div class="form-footer">
-            © 2025 DisiTech - Servicios Industriales de Ingeniería
         </div>
     </div>
 </body>

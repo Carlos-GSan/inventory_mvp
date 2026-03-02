@@ -48,14 +48,17 @@ THIRD_PARTY_APPS = [
 ]
 
 LOCAL_APPS = [
+    "apps.common",
     "apps.inventory",
     "apps.profiles",
+    "apps.company",
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -88,12 +91,25 @@ WSGI_APPLICATION = "config.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+# PostgreSQL para producción, SQLite para desarrollo
+if env.bool("USE_POSTGRES", default=False):
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.postgresql",
+            "NAME": env("POSTGRES_DB", default="disitech_db"),
+            "USER": env("POSTGRES_USER", default="postgres"),
+            "PASSWORD": env("POSTGRES_PASSWORD", default="postgres"),
+            "HOST": env("POSTGRES_HOST", default="localhost"),
+            "PORT": env("POSTGRES_PORT", default="5432"),
+        }
     }
-}
+else:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": BASE_DIR / "db.sqlite3",
+        }
+    }
 
 
 # Password validation
@@ -135,22 +151,65 @@ STATICFILES_DIRS = [BASE_DIR / "static"]
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
 # Media files
-MEDIA_URL = "media/"
-MEDIA_ROOT = BASE_DIR / "media"
+# Bunny Storage para producción, local para desarrollo
+USE_BUNNY_STORAGE = env.bool("USE_BUNNY_STORAGE", default=False)
+
+if USE_BUNNY_STORAGE:
+    BUNNY_USERNAME = env("BUNNY_USERNAME", default="")
+    BUNNY_PASSWORD = env("BUNNY_PASSWORD", default="")
+    BUNNY_TOKEN_KEY = env("BUNNY_TOKEN_KEY", default="")
+    BUNNY_TOKEN_EXPIRATION = env.int("BUNNY_TOKEN_EXPIRATION", default=604800)
+    BUNNY_CDN_URL = env("MEDIA_URL", default="https://disitech.b-cdn.net/")
+    BUNNY_REGION = env("BUNNY_REGION", default="")
+    STORAGES = {
+        "default": {
+            "BACKEND": "apps.common.storage.BunnyStorage",
+        },
+        "staticfiles": {
+            "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+        },
+    }
+    MEDIA_URL = env("MEDIA_URL", default="https://disitech.b-cdn.net/")
+else:
+    STORAGES = {
+        "default": {
+            "BACKEND": "django.core.files.storage.FileSystemStorage",
+        },
+        "staticfiles": {
+            "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+        },
+    }
+    MEDIA_URL = "media/"
+    MEDIA_ROOT = BASE_DIR / "media"
 
 # Login/Logout URLs
 LOGIN_URL = "login"
 LOGIN_REDIRECT_URL = "dashboard"
 LOGOUT_REDIRECT_URL = "login"
 
-SITE_URL = os.getenv("SITE_URL", "http://localhost:8000")  # Cambiar en producción
-EMAIL_BACKEND= os.getenv("EMAIL_BACKEND","django.core.mail.backends.smtp.EmailBackend")
-EMAIL_HOST = os.getenv("EMAIL_HOST","")
-EMAIL_PORT = int(os.getenv("EMAIL_PORT","465"))
-EMAIL_HOST_USER=os.getenv("EMAIL_HOST_USER","")
-EMAIL_HOST_PASSWORD=os.getenv("EMAIL_HOST_PASSWORD", "")
-EMAIL_USE_TLS = os.getenv("EMAIL_USE_TLS", "true").lower() == "true"
-EMAIL_USE_SSL = os.getenv("EMAIL_USE_SSL", "false").lower() == "true"
-DEFAULT_FROM_EMAIL = os.getenv("DEFAULT_FROM_EMAIL","no-reply@gmail.com")
-SUPPORT_INBOX = os.getenv("SUPPORT_INBOX", "soporte@gmail.com")
+# Default primary key field type
+DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+# Site URL
+SITE_URL = env("SITE_URL", default="http://localhost:8000")
+
+# Email configuration
+EMAIL_BACKEND = env("EMAIL_BACKEND", default="django.core.mail.backends.smtp.EmailBackend")
+EMAIL_HOST = env("EMAIL_HOST", default="")
+EMAIL_PORT = env.int("EMAIL_PORT", default=465)
+EMAIL_HOST_USER = env("EMAIL_HOST_USER", default="")
+EMAIL_HOST_PASSWORD = env("EMAIL_HOST_PASSWORD", default="")
+EMAIL_USE_TLS = env.bool("EMAIL_USE_TLS", default=True)
+EMAIL_USE_SSL = env.bool("EMAIL_USE_SSL", default=False)
+DEFAULT_FROM_EMAIL = env("DEFAULT_FROM_EMAIL", default="no-reply@gmail.com")
+SUPPORT_INBOX = env("SUPPORT_INBOX", default="soporte@gmail.com")
 EMAIL_TIMEOUT = 20
+
+# Security settings for production
+if not DEBUG:
+    SECURE_SSL_REDIRECT = env.bool("SECURE_SSL_REDIRECT", default=False)
+    SESSION_COOKIE_SECURE = env.bool("SESSION_COOKIE_SECURE", default=False)
+    CSRF_COOKIE_SECURE = env.bool("CSRF_COOKIE_SECURE", default=False)
+    SECURE_BROWSER_XSS_FILTER = True
+    SECURE_CONTENT_TYPE_NOSNIFF = True
+    X_FRAME_OPTIONS = "DENY"

@@ -1,0 +1,1619 @@
+[
+{
+  "model": "auth.group",
+  "fields": {
+    "name": "operador",
+    "permissions": [
+      [
+        "view_category",
+        "inventory",
+        "category"
+      ],
+      [
+        "view_inventoryitem",
+        "inventory",
+        "inventoryitem"
+      ],
+      [
+        "add_requisition",
+        "inventory",
+        "requisition"
+      ],
+      [
+        "view_requisition",
+        "inventory",
+        "requisition"
+      ]
+    ]
+  }
+},
+{
+  "model": "auth.group",
+  "fields": {
+    "name": "compras",
+    "permissions": [
+      [
+        "add_purchase",
+        "inventory",
+        "purchase"
+      ],
+      [
+        "view_purchase",
+        "inventory",
+        "purchase"
+      ],
+      [
+        "add_purchaseline",
+        "inventory",
+        "purchaseline"
+      ],
+      [
+        "view_purchaseline",
+        "inventory",
+        "purchaseline"
+      ]
+    ]
+  }
+},
+{
+  "model": "auth.user",
+  "fields": {
+    "password": "pbkdf2_sha256$1200000$nFrqgrpz9n0lzY11gSCthr$yZ8OJBV9ijtq7ve7cdlkf4GzsFiHdJvy8/dqLrP8NVE=",
+    "last_login": "2026-03-02T05:45:23.183Z",
+    "is_superuser": true,
+    "username": "admin",
+    "first_name": "Carlos Enrique",
+    "last_name": "García Sánchez",
+    "email": "admin@example.com",
+    "is_staff": true,
+    "is_active": true,
+    "date_joined": "2026-03-02T02:27:51.885Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "auth.user",
+  "fields": {
+    "password": "pbkdf2_sha256$1200000$1SQ5xQUY5ScUqyZQCeZuQK$xnMF1dnIKEPgKbNRkZa7BU0SZRiyj6R2FjvHKp+o+uY=",
+    "last_login": "2026-01-16T07:16:11.124Z",
+    "is_superuser": true,
+    "username": "carlosgarciasanchez",
+    "first_name": "Carlos",
+    "last_name": "Garcia",
+    "email": "gscarlos.enri@gmail.com",
+    "is_staff": true,
+    "is_active": true,
+    "date_joined": "2025-12-19T08:29:55Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "auth.user",
+  "fields": {
+    "password": "pbkdf2_sha256$1200000$OvOtzWLSdKm0W6Y5KJizmk$X59WVxw4eqfo3qwkVnH+tp/9a8XPHTfRFkHbHhuNwOU=",
+    "last_login": "2025-12-21T19:27:29.274Z",
+    "is_superuser": false,
+    "username": "juancharrasqueado",
+    "first_name": "Juan",
+    "last_name": "Charrasqueado",
+    "email": "juancharrasquedo@mail.com",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2025-12-19T15:11:26Z",
+    "groups": [
+      [
+        "compras"
+      ]
+    ],
+    "user_permissions": []
+  }
+},
+{
+  "model": "auth.user",
+  "fields": {
+    "password": "pbkdf2_sha256$1200000$A9FIkHyzqX7upFSIxILHE3$T4wvnRQ1MJz1yhsQPyPzE+idM0e9qnOOdbHxe7Xu8lA=",
+    "last_login": "2026-01-14T08:12:29.237Z",
+    "is_superuser": false,
+    "username": "carlosmorales",
+    "first_name": "carlos",
+    "last_name": "morales",
+    "email": "rasu@live.com.mx",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2026-01-14T08:12:16.062Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "auth.user",
+  "fields": {
+    "password": "pbkdf2_sha256$1200000$IMsu1K2XTlyXCMB2CmsRU1$9RqT/Se3itdPkNhGv6xDgHYnAR7Szov1kGXyKqlQy+Q=",
+    "last_login": "2026-01-16T04:55:13.664Z",
+    "is_superuser": false,
+    "username": "camaron",
+    "first_name": "Henry",
+    "last_name": "Cavill",
+    "email": "krlitos1203@gmail.com",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2026-01-16T04:52:27.282Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "auth.user",
+  "fields": {
+    "password": "pbkdf2_sha256$1200000$t4BTpuWWDR12FJKJzXhQPU$VQ9QRAttdxqhKkceAFNHJNryY+fTnfOg2tXJLR9k7UU=",
+    "last_login": "2026-01-16T04:57:54.024Z",
+    "is_superuser": false,
+    "username": "usuarioX",
+    "first_name": "Paola",
+    "last_name": "González",
+    "email": "pao.go06@gmail.com",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2026-01-16T04:56:31.821Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "inventory.category",
+  "pk": 1,
+  "fields": {
+    "name": "láminas"
+  }
+},
+{
+  "model": "inventory.category",
+  "pk": 2,
+  "fields": {
+    "name": "angulos, perfiles y tubos"
+  }
+},
+{
+  "model": "inventory.category",
+  "pk": 3,
+  "fields": {
+    "name": "tuberia conduit"
+  }
+},
+{
+  "model": "inventory.category",
+  "pk": 4,
+  "fields": {
+    "name": "herreria"
+  }
+},
+{
+  "model": "inventory.category",
+  "pk": 5,
+  "fields": {
+    "name": "pinturas"
+  }
+},
+{
+  "model": "inventory.category",
+  "pk": 6,
+  "fields": {
+    "name": "equipo de seguridad"
+  }
+},
+{
+  "model": "inventory.category",
+  "pk": 7,
+  "fields": {
+    "name": "pedacería"
+  }
+},
+{
+  "model": "inventory.inventoryitem",
+  "pk": 1,
+  "fields": {
+    "sku": "8591853061451",
+    "slug": "lamina-galvanizada-cal-20",
+    "category": 1,
+    "description": "Lámina galvanizada calibre 20, 1.22x2.44m",
+    "stock": 39,
+    "min_stock": 10,
+    "max_stock": 100,
+    "active": true
+  }
+},
+{
+  "model": "inventory.inventoryitem",
+  "pk": 2,
+  "fields": {
+    "sku": "LAM-002",
+    "slug": "lamina-acero-negro-cal-18",
+    "category": 1,
+    "description": "Lámina acero negro calibre 18, 1.22x2.44m",
+    "stock": 30,
+    "min_stock": 8,
+    "max_stock": 80,
+    "active": true
+  }
+},
+{
+  "model": "inventory.inventoryitem",
+  "pk": 3,
+  "fields": {
+    "sku": "0181896018611",
+    "slug": "angulo-estructural-2x2",
+    "category": 2,
+    "description": "Ángulo estructural 2\" x 2\" x 1/4\", 6m",
+    "stock": 19,
+    "min_stock": 30,
+    "max_stock": 200,
+    "active": true
+  }
+},
+{
+  "model": "inventory.inventoryitem",
+  "pk": 4,
+  "fields": {
+    "sku": "TUB-001",
+    "slug": "tubo-cuadrado-2x2",
+    "category": 2,
+    "description": "Tubo estructural cuadrado 2\" x 2\" cal 14, 6m",
+    "stock": 85,
+    "min_stock": 25,
+    "max_stock": 150,
+    "active": true
+  }
+},
+{
+  "model": "inventory.inventoryitem",
+  "pk": 5,
+  "fields": {
+    "sku": "1970494841177",
+    "slug": "conduit-pared-delgada-1-2",
+    "category": 3,
+    "description": "Tubería conduit pared delgada 1/2\", 3m",
+    "stock": 200,
+    "min_stock": 50,
+    "max_stock": 400,
+    "active": true
+  }
+},
+{
+  "model": "inventory.inventoryitem",
+  "pk": 6,
+  "fields": {
+    "sku": "1628141271944",
+    "slug": "conduit-pared-gruesa-3-4",
+    "category": 3,
+    "description": "Tubería conduit pared gruesa 3/4\", 3m",
+    "stock": 69,
+    "min_stock": 40,
+    "max_stock": 300,
+    "active": true
+  }
+},
+{
+  "model": "inventory.inventoryitem",
+  "pk": 7,
+  "fields": {
+    "sku": "4775066989496",
+    "slug": "soldadura-e6011-1-8",
+    "category": 4,
+    "description": "Electrodo para soldadura E6011 1/8\", caja 5kg",
+    "stock": 5,
+    "min_stock": 10,
+    "max_stock": 50,
+    "active": true
+  }
+},
+{
+  "model": "inventory.inventoryitem",
+  "pk": 8,
+  "fields": {
+    "sku": "1612314156886",
+    "slug": "disco-corte-metal-14",
+    "category": 4,
+    "description": "Disco de corte para metal 14\", espesor 1/8\"",
+    "stock": 60,
+    "min_stock": 15,
+    "max_stock": 100,
+    "active": true
+  }
+},
+{
+  "model": "inventory.inventoryitem",
+  "pk": 9,
+  "fields": {
+    "sku": "2480709826633",
+    "slug": "pintura-anticorrosiva-rojo-oxido",
+    "category": 5,
+    "description": "Pintura anticorrosiva rojo óxido, cubeta 19L",
+    "stock": 26,
+    "min_stock": 5,
+    "max_stock": 40,
+    "active": true
+  }
+},
+{
+  "model": "inventory.inventoryitem",
+  "pk": 10,
+  "fields": {
+    "sku": "1933100813685",
+    "slug": "thinner-estandar",
+    "category": 5,
+    "description": "Thinner estándar, cubeta 19L",
+    "stock": 12,
+    "min_stock": 8,
+    "max_stock": 30,
+    "active": true
+  }
+},
+{
+  "model": "inventory.inventoryitem",
+  "pk": 11,
+  "fields": {
+    "sku": "SEG-001",
+    "slug": "casco-seguridad-blanco",
+    "category": 6,
+    "description": "Casco de seguridad industrial color blanco",
+    "stock": 37,
+    "min_stock": 15,
+    "max_stock": 60,
+    "active": true
+  }
+},
+{
+  "model": "inventory.inventoryitem",
+  "pk": 12,
+  "fields": {
+    "sku": "2691704374320",
+    "slug": "guantes-carnaza-tipo-a",
+    "category": 6,
+    "description": "Guantes de carnaza tipo A, par",
+    "stock": 122,
+    "min_stock": 40,
+    "max_stock": 200,
+    "active": true
+  }
+},
+{
+  "model": "inventory.inventoryitem",
+  "pk": 13,
+  "fields": {
+    "sku": "SEG-003",
+    "slug": "lentes-seguridad-claro",
+    "category": 6,
+    "description": "Lentes de seguridad claro antiempañante",
+    "stock": 80,
+    "min_stock": 30,
+    "max_stock": 150,
+    "active": true
+  }
+},
+{
+  "model": "inventory.inventoryitem",
+  "pk": 14,
+  "fields": {
+    "sku": "ped-lam01",
+    "slug": "pedaceria-g",
+    "category": 7,
+    "description": "lamina de acero de 5x5",
+    "stock": 3,
+    "min_stock": 10,
+    "max_stock": 40,
+    "active": true
+  }
+},
+{
+  "model": "inventory.supplier",
+  "pk": 1,
+  "fields": {
+    "name": "Aceros del Norte S.A. de C.V."
+  }
+},
+{
+  "model": "inventory.supplier",
+  "pk": 2,
+  "fields": {
+    "name": "Ferretería Industrial Gómez"
+  }
+},
+{
+  "model": "inventory.supplier",
+  "pk": 3,
+  "fields": {
+    "name": "Pinturas y Recubrimientos Profesionales"
+  }
+},
+{
+  "model": "inventory.supplier",
+  "pk": 4,
+  "fields": {
+    "name": "Seguridad Industrial Mexicana"
+  }
+},
+{
+  "model": "inventory.purchase",
+  "pk": 1,
+  "fields": {
+    "supplier": 1,
+    "purchased_at": "2025-12-01",
+    "ref": "FAC-2025-1234",
+    "created_at": "2025-12-01T10:30:00Z"
+  }
+},
+{
+  "model": "inventory.purchase",
+  "pk": 2,
+  "fields": {
+    "supplier": 2,
+    "purchased_at": "2025-12-05",
+    "ref": "FAC-2025-5678",
+    "created_at": "2025-12-05T14:15:00Z"
+  }
+},
+{
+  "model": "inventory.purchase",
+  "pk": 3,
+  "fields": {
+    "supplier": 3,
+    "purchased_at": "2025-12-10",
+    "ref": "FAC-2025-9012",
+    "created_at": "2025-12-10T09:00:00Z"
+  }
+},
+{
+  "model": "inventory.purchase",
+  "pk": 4,
+  "fields": {
+    "supplier": 2,
+    "purchased_at": "2025-12-19",
+    "ref": "OC-001",
+    "created_at": "2025-12-19T09:06:35.964Z"
+  }
+},
+{
+  "model": "inventory.purchase",
+  "pk": 5,
+  "fields": {
+    "supplier": 2,
+    "purchased_at": "2025-12-19",
+    "ref": "OC-098270",
+    "created_at": "2025-12-19T14:04:28.631Z"
+  }
+},
+{
+  "model": "inventory.purchase",
+  "pk": 6,
+  "fields": {
+    "supplier": 2,
+    "purchased_at": "2025-12-19",
+    "ref": "OC-098271",
+    "created_at": "2025-12-19T14:07:34.391Z"
+  }
+},
+{
+  "model": "inventory.purchase",
+  "pk": 7,
+  "fields": {
+    "supplier": 3,
+    "purchased_at": "2025-12-19",
+    "ref": "OC-0980770780978",
+    "created_at": "2025-12-19T22:42:31.612Z"
+  }
+},
+{
+  "model": "inventory.purchase",
+  "pk": 8,
+  "fields": {
+    "supplier": 1,
+    "purchased_at": "2025-12-19",
+    "ref": "oc-245",
+    "created_at": "2025-12-19T22:47:34.597Z"
+  }
+},
+{
+  "model": "inventory.purchase",
+  "pk": 9,
+  "fields": {
+    "supplier": 2,
+    "purchased_at": "2025-12-20",
+    "ref": "oc-12840",
+    "created_at": "2025-12-20T22:33:17.039Z"
+  }
+},
+{
+  "model": "inventory.purchase",
+  "pk": 10,
+  "fields": {
+    "supplier": 3,
+    "purchased_at": "2025-12-21",
+    "ref": "0ckhkyi",
+    "created_at": "2025-12-21T19:26:48.863Z"
+  }
+},
+{
+  "model": "inventory.purchaseline",
+  "pk": 1,
+  "fields": {
+    "purchase": 1,
+    "item": 1,
+    "qty": 50,
+    "unit_price": "450.5000"
+  }
+},
+{
+  "model": "inventory.purchaseline",
+  "pk": 2,
+  "fields": {
+    "purchase": 1,
+    "item": 2,
+    "qty": 30,
+    "unit_price": "520.0000"
+  }
+},
+{
+  "model": "inventory.purchaseline",
+  "pk": 3,
+  "fields": {
+    "purchase": 1,
+    "item": 3,
+    "qty": 100,
+    "unit_price": "185.7500"
+  }
+},
+{
+  "model": "inventory.purchaseline",
+  "pk": 4,
+  "fields": {
+    "purchase": 2,
+    "item": 5,
+    "qty": 200,
+    "unit_price": "45.5000"
+  }
+},
+{
+  "model": "inventory.purchaseline",
+  "pk": 5,
+  "fields": {
+    "purchase": 2,
+    "item": 6,
+    "qty": 150,
+    "unit_price": "62.8000"
+  }
+},
+{
+  "model": "inventory.purchaseline",
+  "pk": 6,
+  "fields": {
+    "purchase": 2,
+    "item": 7,
+    "qty": 30,
+    "unit_price": "380.0000"
+  }
+},
+{
+  "model": "inventory.purchaseline",
+  "pk": 7,
+  "fields": {
+    "purchase": 3,
+    "item": 9,
+    "qty": 20,
+    "unit_price": "850.0000"
+  }
+},
+{
+  "model": "inventory.purchaseline",
+  "pk": 8,
+  "fields": {
+    "purchase": 3,
+    "item": 10,
+    "qty": 15,
+    "unit_price": "420.0000"
+  }
+},
+{
+  "model": "inventory.purchaseline",
+  "pk": 9,
+  "fields": {
+    "purchase": 4,
+    "item": 3,
+    "qty": 3,
+    "unit_price": "50.0000"
+  }
+},
+{
+  "model": "inventory.purchaseline",
+  "pk": 10,
+  "fields": {
+    "purchase": 5,
+    "item": 6,
+    "qty": 50,
+    "unit_price": "100.0000"
+  }
+},
+{
+  "model": "inventory.purchaseline",
+  "pk": 11,
+  "fields": {
+    "purchase": 5,
+    "item": 11,
+    "qty": 2,
+    "unit_price": "90.0000"
+  }
+},
+{
+  "model": "inventory.purchaseline",
+  "pk": 12,
+  "fields": {
+    "purchase": 6,
+    "item": 6,
+    "qty": 50,
+    "unit_price": "250.0000"
+  }
+},
+{
+  "model": "inventory.purchaseline",
+  "pk": 13,
+  "fields": {
+    "purchase": 6,
+    "item": 12,
+    "qty": 2,
+    "unit_price": "25.0000"
+  }
+},
+{
+  "model": "inventory.purchaseline",
+  "pk": 14,
+  "fields": {
+    "purchase": 7,
+    "item": 9,
+    "qty": 5,
+    "unit_price": "100.0000"
+  }
+},
+{
+  "model": "inventory.purchaseline",
+  "pk": 15,
+  "fields": {
+    "purchase": 8,
+    "item": 8,
+    "qty": 20,
+    "unit_price": "30.0000"
+  }
+},
+{
+  "model": "inventory.purchaseline",
+  "pk": 16,
+  "fields": {
+    "purchase": 9,
+    "item": 3,
+    "qty": 20,
+    "unit_price": "100.0000"
+  }
+},
+{
+  "model": "inventory.purchaseline",
+  "pk": 17,
+  "fields": {
+    "purchase": 10,
+    "item": 9,
+    "qty": 20,
+    "unit_price": "200.0000"
+  }
+},
+{
+  "model": "inventory.requisition",
+  "pk": 1,
+  "fields": {
+    "requested_by": [
+      "carlosgarciasanchez"
+    ],
+    "requested_at": "2025-12-19",
+    "note": "Necesita para armar mesa de metal",
+    "created_at": "2025-12-19T08:50:31.552Z"
+  }
+},
+{
+  "model": "inventory.requisition",
+  "pk": 2,
+  "fields": {
+    "requested_by": [
+      "carlosgarciasanchez"
+    ],
+    "requested_at": "2025-12-19",
+    "note": "Andamio empresa Heisenberg",
+    "created_at": "2025-12-19T08:53:24.315Z"
+  }
+},
+{
+  "model": "inventory.requisition",
+  "pk": 3,
+  "fields": {
+    "requested_by": [
+      "carlosgarciasanchez"
+    ],
+    "requested_at": "2025-12-19",
+    "note": "armado de andamio Garrasheimer",
+    "created_at": "2025-12-19T09:01:27.456Z"
+  }
+},
+{
+  "model": "inventory.requisition",
+  "pk": 4,
+  "fields": {
+    "requested_by": [
+      "carlosgarciasanchez"
+    ],
+    "requested_at": "2025-12-19",
+    "note": "Trabajo de tuberia",
+    "created_at": "2025-12-19T14:01:19.075Z"
+  }
+},
+{
+  "model": "inventory.requisition",
+  "pk": 5,
+  "fields": {
+    "requested_by": [
+      "carlosgarciasanchez"
+    ],
+    "requested_at": "2025-12-19",
+    "note": "Solicito más tuberia",
+    "created_at": "2025-12-19T14:02:11.564Z"
+  }
+},
+{
+  "model": "inventory.requisition",
+  "pk": 6,
+  "fields": {
+    "requested_by": [
+      "carlosgarciasanchez"
+    ],
+    "requested_at": "2025-12-19",
+    "note": "TUBERÍA",
+    "created_at": "2025-12-19T14:06:10.290Z"
+  }
+},
+{
+  "model": "inventory.requisition",
+  "pk": 7,
+  "fields": {
+    "requested_by": [
+      "juancharrasqueado"
+    ],
+    "requested_at": "2025-12-19",
+    "note": "Solicito laminas para fabricar mesa de metal del trabajo prueba",
+    "created_at": "2025-12-19T15:24:54.763Z"
+  }
+},
+{
+  "model": "inventory.requisition",
+  "pk": 8,
+  "fields": {
+    "requested_by": [
+      "juancharrasqueado"
+    ],
+    "requested_at": "2025-12-19",
+    "note": "solicito 20 electrodos para soldar prueba",
+    "created_at": "2025-12-19T15:30:22.490Z"
+  }
+},
+{
+  "model": "inventory.requisition",
+  "pk": 9,
+  "fields": {
+    "requested_by": [
+      "carlosgarciasanchez"
+    ],
+    "requested_at": "2025-12-19",
+    "note": "PRUEBA PINTURA ",
+    "created_at": "2025-12-19T22:43:54.308Z"
+  }
+},
+{
+  "model": "inventory.requisition",
+  "pk": 10,
+  "fields": {
+    "requested_by": [
+      "carlosgarciasanchez"
+    ],
+    "requested_at": "2025-12-19",
+    "note": "disco prueba",
+    "created_at": "2025-12-19T22:46:30.379Z"
+  }
+},
+{
+  "model": "inventory.requisition",
+  "pk": 11,
+  "fields": {
+    "requested_by": [
+      "carlosgarciasanchez"
+    ],
+    "requested_at": "2025-12-20",
+    "note": "Trabajo. prueba",
+    "created_at": "2025-12-20T22:34:16.722Z"
+  }
+},
+{
+  "model": "inventory.requisitionline",
+  "pk": 1,
+  "fields": {
+    "requisition": 3,
+    "item": 3,
+    "qty": 4
+  }
+},
+{
+  "model": "inventory.requisitionline",
+  "pk": 2,
+  "fields": {
+    "requisition": 3,
+    "item": 1,
+    "qty": 1
+  }
+},
+{
+  "model": "inventory.requisitionline",
+  "pk": 3,
+  "fields": {
+    "requisition": 4,
+    "item": 6,
+    "qty": 100
+  }
+},
+{
+  "model": "inventory.requisitionline",
+  "pk": 4,
+  "fields": {
+    "requisition": 5,
+    "item": 6,
+    "qty": 20
+  }
+},
+{
+  "model": "inventory.requisitionline",
+  "pk": 5,
+  "fields": {
+    "requisition": 6,
+    "item": 6,
+    "qty": 50
+  }
+},
+{
+  "model": "inventory.requisitionline",
+  "pk": 6,
+  "fields": {
+    "requisition": 7,
+    "item": 1,
+    "qty": 5
+  }
+},
+{
+  "model": "inventory.requisitionline",
+  "pk": 7,
+  "fields": {
+    "requisition": 8,
+    "item": 7,
+    "qty": 20
+  }
+},
+{
+  "model": "inventory.requisitionline",
+  "pk": 8,
+  "fields": {
+    "requisition": 9,
+    "item": 9,
+    "qty": 17
+  }
+},
+{
+  "model": "inventory.requisitionline",
+  "pk": 9,
+  "fields": {
+    "requisition": 10,
+    "item": 8,
+    "qty": 20
+  }
+},
+{
+  "model": "inventory.requisitionline",
+  "pk": 10,
+  "fields": {
+    "requisition": 11,
+    "item": 3,
+    "qty": 120
+  }
+},
+{
+  "model": "inventory.requisitionline",
+  "pk": 11,
+  "fields": {
+    "requisition": 11,
+    "item": 6,
+    "qty": 11
+  }
+},
+{
+  "model": "inventory.inventorytxn",
+  "pk": 1,
+  "fields": {
+    "item": 1,
+    "txn_type": "PURCHASE",
+    "qty": 50,
+    "unit_price": "450.5000",
+    "supplier": 1,
+    "purchase": 1,
+    "requisition": null,
+    "happened_at": "2025-12-01T10:30:00Z",
+    "note": "Compra inicial de láminas",
+    "created_at": "2025-12-01T10:30:00Z"
+  }
+},
+{
+  "model": "inventory.inventorytxn",
+  "pk": 2,
+  "fields": {
+    "item": 2,
+    "txn_type": "PURCHASE",
+    "qty": 30,
+    "unit_price": "520.0000",
+    "supplier": 1,
+    "purchase": 1,
+    "requisition": null,
+    "happened_at": "2025-12-01T10:30:00Z",
+    "note": "Compra inicial de láminas",
+    "created_at": "2025-12-01T10:30:00Z"
+  }
+},
+{
+  "model": "inventory.inventorytxn",
+  "pk": 3,
+  "fields": {
+    "item": 3,
+    "txn_type": "PURCHASE",
+    "qty": 100,
+    "unit_price": "185.7500",
+    "supplier": 1,
+    "purchase": 1,
+    "requisition": null,
+    "happened_at": "2025-12-01T10:30:00Z",
+    "note": "Compra de ángulos estructurales",
+    "created_at": "2025-12-01T10:30:00Z"
+  }
+},
+{
+  "model": "inventory.inventorytxn",
+  "pk": 4,
+  "fields": {
+    "item": 5,
+    "txn_type": "PURCHASE",
+    "qty": 200,
+    "unit_price": "45.5000",
+    "supplier": 2,
+    "purchase": 2,
+    "requisition": null,
+    "happened_at": "2025-12-05T14:15:00Z",
+    "note": "Reabastecimiento tubería conduit",
+    "created_at": "2025-12-05T14:15:00Z"
+  }
+},
+{
+  "model": "inventory.inventorytxn",
+  "pk": 5,
+  "fields": {
+    "item": 6,
+    "txn_type": "PURCHASE",
+    "qty": 150,
+    "unit_price": "62.8000",
+    "supplier": 2,
+    "purchase": 2,
+    "requisition": null,
+    "happened_at": "2025-12-05T14:15:00Z",
+    "note": "Reabastecimiento tubería conduit",
+    "created_at": "2025-12-05T14:15:00Z"
+  }
+},
+{
+  "model": "inventory.inventorytxn",
+  "pk": 6,
+  "fields": {
+    "item": 7,
+    "txn_type": "PURCHASE",
+    "qty": 30,
+    "unit_price": "380.0000",
+    "supplier": 2,
+    "purchase": 2,
+    "requisition": null,
+    "happened_at": "2025-12-05T14:15:00Z",
+    "note": "Compra de soldadura",
+    "created_at": "2025-12-05T14:15:00Z"
+  }
+},
+{
+  "model": "inventory.inventorytxn",
+  "pk": 7,
+  "fields": {
+    "item": 9,
+    "txn_type": "PURCHASE",
+    "qty": 20,
+    "unit_price": "850.0000",
+    "supplier": 3,
+    "purchase": 3,
+    "requisition": null,
+    "happened_at": "2025-12-10T09:00:00Z",
+    "note": "Compra pintura anticorrosiva",
+    "created_at": "2025-12-10T09:00:00Z"
+  }
+},
+{
+  "model": "inventory.inventorytxn",
+  "pk": 8,
+  "fields": {
+    "item": 10,
+    "txn_type": "PURCHASE",
+    "qty": 15,
+    "unit_price": "420.0000",
+    "supplier": 3,
+    "purchase": 3,
+    "requisition": null,
+    "happened_at": "2025-12-10T09:00:00Z",
+    "note": "Compra de thinner",
+    "created_at": "2025-12-10T09:00:00Z"
+  }
+},
+{
+  "model": "inventory.inventorytxn",
+  "pk": 9,
+  "fields": {
+    "item": 1,
+    "txn_type": "ISSUE",
+    "qty": -5,
+    "unit_price": null,
+    "supplier": null,
+    "purchase": null,
+    "requisition": null,
+    "happened_at": "2025-12-12T08:00:00Z",
+    "note": "Salida para proyecto obra civil",
+    "created_at": "2025-12-12T08:00:00Z"
+  }
+},
+{
+  "model": "inventory.inventorytxn",
+  "pk": 10,
+  "fields": {
+    "item": 3,
+    "txn_type": "ISSUE",
+    "qty": -20,
+    "unit_price": null,
+    "supplier": null,
+    "purchase": null,
+    "requisition": null,
+    "happened_at": "2025-12-13T09:30:00Z",
+    "note": "Salida para estructura metálica",
+    "created_at": "2025-12-13T09:30:00Z"
+  }
+},
+{
+  "model": "inventory.inventorytxn",
+  "pk": 11,
+  "fields": {
+    "item": 11,
+    "txn_type": "ADJUST",
+    "qty": 35,
+    "unit_price": "125.0000",
+    "supplier": 4,
+    "purchase": null,
+    "requisition": null,
+    "happened_at": "2025-12-15T10:00:00Z",
+    "note": "Ajuste inventario inicial equipo de seguridad",
+    "created_at": "2025-12-15T10:00:00Z"
+  }
+},
+{
+  "model": "inventory.inventorytxn",
+  "pk": 12,
+  "fields": {
+    "item": 12,
+    "txn_type": "ADJUST",
+    "qty": 120,
+    "unit_price": "35.5000",
+    "supplier": 4,
+    "purchase": null,
+    "requisition": null,
+    "happened_at": "2025-12-15T10:00:00Z",
+    "note": "Ajuste inventario inicial equipo de seguridad",
+    "created_at": "2025-12-15T10:00:00Z"
+  }
+},
+{
+  "model": "inventory.inventorytxn",
+  "pk": 13,
+  "fields": {
+    "item": 13,
+    "txn_type": "ADJUST",
+    "qty": 80,
+    "unit_price": "45.0000",
+    "supplier": 4,
+    "purchase": null,
+    "requisition": null,
+    "happened_at": "2025-12-15T10:00:00Z",
+    "note": "Ajuste inventario inicial equipo de seguridad",
+    "created_at": "2025-12-15T10:00:00Z"
+  }
+},
+{
+  "model": "inventory.inventorytxn",
+  "pk": 14,
+  "fields": {
+    "item": 4,
+    "txn_type": "ADJUST",
+    "qty": 85,
+    "unit_price": "220.0000",
+    "supplier": 1,
+    "purchase": null,
+    "requisition": null,
+    "happened_at": "2025-12-16T11:00:00Z",
+    "note": "Ajuste inventario inicial tubos",
+    "created_at": "2025-12-16T11:00:00Z"
+  }
+},
+{
+  "model": "inventory.inventorytxn",
+  "pk": 15,
+  "fields": {
+    "item": 8,
+    "txn_type": "ADJUST",
+    "qty": 60,
+    "unit_price": "28.5000",
+    "supplier": 2,
+    "purchase": null,
+    "requisition": null,
+    "happened_at": "2025-12-16T11:00:00Z",
+    "note": "Ajuste inventario inicial discos de corte",
+    "created_at": "2025-12-16T11:00:00Z"
+  }
+},
+{
+  "model": "inventory.inventorytxn",
+  "pk": 16,
+  "fields": {
+    "item": 3,
+    "txn_type": "ISSUE",
+    "qty": -4,
+    "unit_price": null,
+    "supplier": null,
+    "purchase": null,
+    "requisition": 3,
+    "happened_at": "2025-12-19T09:01:27.459Z",
+    "note": "Requisición #3",
+    "created_at": "2025-12-19T09:01:27.460Z"
+  }
+},
+{
+  "model": "inventory.inventorytxn",
+  "pk": 17,
+  "fields": {
+    "item": 1,
+    "txn_type": "ISSUE",
+    "qty": -1,
+    "unit_price": null,
+    "supplier": null,
+    "purchase": null,
+    "requisition": 3,
+    "happened_at": "2025-12-19T09:01:27.460Z",
+    "note": "Requisición #3",
+    "created_at": "2025-12-19T09:01:27.460Z"
+  }
+},
+{
+  "model": "inventory.inventorytxn",
+  "pk": 18,
+  "fields": {
+    "item": 3,
+    "txn_type": "PURCHASE",
+    "qty": 3,
+    "unit_price": "50.0000",
+    "supplier": 2,
+    "purchase": 4,
+    "requisition": null,
+    "happened_at": "2025-12-19T09:06:35.971Z",
+    "note": "Compra #4",
+    "created_at": "2025-12-19T09:06:35.971Z"
+  }
+},
+{
+  "model": "inventory.inventorytxn",
+  "pk": 19,
+  "fields": {
+    "item": 6,
+    "txn_type": "ISSUE",
+    "qty": -100,
+    "unit_price": null,
+    "supplier": null,
+    "purchase": null,
+    "requisition": 4,
+    "happened_at": "2025-12-19T14:01:19.077Z",
+    "note": "Requisición #4",
+    "created_at": "2025-12-19T14:01:19.077Z"
+  }
+},
+{
+  "model": "inventory.inventorytxn",
+  "pk": 20,
+  "fields": {
+    "item": 6,
+    "txn_type": "ISSUE",
+    "qty": -20,
+    "unit_price": null,
+    "supplier": null,
+    "purchase": null,
+    "requisition": 5,
+    "happened_at": "2025-12-19T14:02:11.566Z",
+    "note": "Requisición #5",
+    "created_at": "2025-12-19T14:02:11.566Z"
+  }
+},
+{
+  "model": "inventory.inventorytxn",
+  "pk": 21,
+  "fields": {
+    "item": 6,
+    "txn_type": "PURCHASE",
+    "qty": 50,
+    "unit_price": "100.0000",
+    "supplier": 2,
+    "purchase": 5,
+    "requisition": null,
+    "happened_at": "2025-12-19T14:04:28.634Z",
+    "note": "Compra #5",
+    "created_at": "2025-12-19T14:04:28.634Z"
+  }
+},
+{
+  "model": "inventory.inventorytxn",
+  "pk": 22,
+  "fields": {
+    "item": 11,
+    "txn_type": "PURCHASE",
+    "qty": 2,
+    "unit_price": "90.0000",
+    "supplier": 2,
+    "purchase": 5,
+    "requisition": null,
+    "happened_at": "2025-12-19T14:04:28.635Z",
+    "note": "Compra #5",
+    "created_at": "2025-12-19T14:04:28.635Z"
+  }
+},
+{
+  "model": "inventory.inventorytxn",
+  "pk": 23,
+  "fields": {
+    "item": 6,
+    "txn_type": "ISSUE",
+    "qty": -50,
+    "unit_price": null,
+    "supplier": null,
+    "purchase": null,
+    "requisition": 6,
+    "happened_at": "2025-12-19T14:06:10.291Z",
+    "note": "Requisición #6",
+    "created_at": "2025-12-19T14:06:10.291Z"
+  }
+},
+{
+  "model": "inventory.inventorytxn",
+  "pk": 24,
+  "fields": {
+    "item": 6,
+    "txn_type": "PURCHASE",
+    "qty": 50,
+    "unit_price": "250.0000",
+    "supplier": 2,
+    "purchase": 6,
+    "requisition": null,
+    "happened_at": "2025-12-19T14:07:34.394Z",
+    "note": "Compra #6",
+    "created_at": "2025-12-19T14:07:34.394Z"
+  }
+},
+{
+  "model": "inventory.inventorytxn",
+  "pk": 25,
+  "fields": {
+    "item": 12,
+    "txn_type": "PURCHASE",
+    "qty": 2,
+    "unit_price": "25.0000",
+    "supplier": 2,
+    "purchase": 6,
+    "requisition": null,
+    "happened_at": "2025-12-19T14:07:34.395Z",
+    "note": "Compra #6",
+    "created_at": "2025-12-19T14:07:34.395Z"
+  }
+},
+{
+  "model": "inventory.inventorytxn",
+  "pk": 26,
+  "fields": {
+    "item": 1,
+    "txn_type": "ISSUE",
+    "qty": -5,
+    "unit_price": null,
+    "supplier": null,
+    "purchase": null,
+    "requisition": 7,
+    "happened_at": "2025-12-19T15:24:54.771Z",
+    "note": "Requisición #7",
+    "created_at": "2025-12-19T15:24:54.772Z"
+  }
+},
+{
+  "model": "inventory.inventorytxn",
+  "pk": 27,
+  "fields": {
+    "item": 7,
+    "txn_type": "ISSUE",
+    "qty": -20,
+    "unit_price": null,
+    "supplier": null,
+    "purchase": null,
+    "requisition": 8,
+    "happened_at": "2025-12-19T15:30:22.498Z",
+    "note": "Requisición #8",
+    "created_at": "2025-12-19T15:30:22.498Z"
+  }
+},
+{
+  "model": "inventory.inventorytxn",
+  "pk": 28,
+  "fields": {
+    "item": 9,
+    "txn_type": "PURCHASE",
+    "qty": 5,
+    "unit_price": "100.0000",
+    "supplier": 3,
+    "purchase": 7,
+    "requisition": null,
+    "happened_at": "2025-12-19T22:42:31.616Z",
+    "note": "Compra #7",
+    "created_at": "2025-12-19T22:42:31.616Z"
+  }
+},
+{
+  "model": "inventory.inventorytxn",
+  "pk": 29,
+  "fields": {
+    "item": 9,
+    "txn_type": "ISSUE",
+    "qty": -17,
+    "unit_price": null,
+    "supplier": null,
+    "purchase": null,
+    "requisition": 9,
+    "happened_at": "2025-12-19T22:43:54.311Z",
+    "note": "Requisición #9",
+    "created_at": "2025-12-19T22:43:54.311Z"
+  }
+},
+{
+  "model": "inventory.inventorytxn",
+  "pk": 30,
+  "fields": {
+    "item": 8,
+    "txn_type": "ISSUE",
+    "qty": -20,
+    "unit_price": null,
+    "supplier": null,
+    "purchase": null,
+    "requisition": 10,
+    "happened_at": "2025-12-19T22:46:30.382Z",
+    "note": "Requisición #10",
+    "created_at": "2025-12-19T22:46:30.382Z"
+  }
+},
+{
+  "model": "inventory.inventorytxn",
+  "pk": 31,
+  "fields": {
+    "item": 8,
+    "txn_type": "PURCHASE",
+    "qty": 20,
+    "unit_price": "30.0000",
+    "supplier": 1,
+    "purchase": 8,
+    "requisition": null,
+    "happened_at": "2025-12-19T22:47:34.601Z",
+    "note": "Compra #8",
+    "created_at": "2025-12-19T22:47:34.601Z"
+  }
+},
+{
+  "model": "inventory.inventorytxn",
+  "pk": 32,
+  "fields": {
+    "item": 3,
+    "txn_type": "PURCHASE",
+    "qty": 20,
+    "unit_price": "100.0000",
+    "supplier": 2,
+    "purchase": 9,
+    "requisition": null,
+    "happened_at": "2025-12-20T22:33:17.045Z",
+    "note": "Compra #9",
+    "created_at": "2025-12-20T22:33:17.046Z"
+  }
+},
+{
+  "model": "inventory.inventorytxn",
+  "pk": 33,
+  "fields": {
+    "item": 3,
+    "txn_type": "ISSUE",
+    "qty": -120,
+    "unit_price": null,
+    "supplier": null,
+    "purchase": null,
+    "requisition": 11,
+    "happened_at": "2025-12-20T22:34:16.725Z",
+    "note": "Requisición #11",
+    "created_at": "2025-12-20T22:34:16.725Z"
+  }
+},
+{
+  "model": "inventory.inventorytxn",
+  "pk": 34,
+  "fields": {
+    "item": 6,
+    "txn_type": "ISSUE",
+    "qty": -11,
+    "unit_price": null,
+    "supplier": null,
+    "purchase": null,
+    "requisition": 11,
+    "happened_at": "2025-12-20T22:34:16.726Z",
+    "note": "Requisición #11",
+    "created_at": "2025-12-20T22:34:16.726Z"
+  }
+},
+{
+  "model": "inventory.inventorytxn",
+  "pk": 35,
+  "fields": {
+    "item": 9,
+    "txn_type": "PURCHASE",
+    "qty": 20,
+    "unit_price": "200.0000",
+    "supplier": 3,
+    "purchase": 10,
+    "requisition": null,
+    "happened_at": "2025-12-21T19:26:48.867Z",
+    "note": "Compra #10",
+    "created_at": "2025-12-21T19:26:48.868Z"
+  }
+},
+{
+  "model": "profiles.employee",
+  "pk": 1,
+  "fields": {
+    "user": [
+      "carlosmorales"
+    ],
+    "first_name": "carlos",
+    "last_name": "morales",
+    "email": "rasu@live.com.mx",
+    "phone": "+524435284979",
+    "position": "Ingeniero en sistemas",
+    "department": "TI",
+    "hire_date": "2026-01-14",
+    "is_active": true,
+    "photo": "",
+    "activation_token": null,
+    "activation_token_created": null,
+    "created_at": "2026-01-14T07:57:22.795Z",
+    "updated_at": "2026-01-14T08:12:16.413Z"
+  }
+},
+{
+  "model": "profiles.employee",
+  "pk": 2,
+  "fields": {
+    "user": [
+      "carlosgarciasanchez"
+    ],
+    "first_name": "Carlos",
+    "last_name": "Garcia",
+    "email": "gscarlos.enri@gmail.com",
+    "phone": "+524481298254",
+    "position": "Administrador",
+    "department": "TI",
+    "hire_date": "2026-01-15",
+    "is_active": true,
+    "photo": "employee_photos/1000021314.jpg",
+    "activation_token": null,
+    "activation_token_created": null,
+    "created_at": "2026-01-15T08:47:24.231Z",
+    "updated_at": "2026-01-16T06:10:37.076Z"
+  }
+},
+{
+  "model": "profiles.employee",
+  "pk": 3,
+  "fields": {
+    "user": [
+      "camaron"
+    ],
+    "first_name": "Henry",
+    "last_name": "Cavill",
+    "email": "krlitos1203@gmail.com",
+    "phone": "+524432378321",
+    "position": "Operador",
+    "department": "Maquinados",
+    "hire_date": "2026-01-15",
+    "is_active": true,
+    "photo": "employee_photos/henry-cavill.avif",
+    "activation_token": null,
+    "activation_token_created": null,
+    "created_at": "2026-01-15T09:19:01.331Z",
+    "updated_at": "2026-01-16T04:52:27.568Z"
+  }
+},
+{
+  "model": "profiles.employee",
+  "pk": 4,
+  "fields": {
+    "user": [
+      "usuarioX"
+    ],
+    "first_name": "Paola",
+    "last_name": "González",
+    "email": "pao.go06@gmail.com",
+    "phone": "+524481298253",
+    "position": "Administrador",
+    "department": "TI",
+    "hire_date": "2026-01-16",
+    "is_active": true,
+    "photo": "employee_photos/SHREK.jpg",
+    "activation_token": null,
+    "activation_token_created": null,
+    "created_at": "2026-01-16T04:03:39.542Z",
+    "updated_at": "2026-01-16T04:57:24.192Z"
+  }
+},
+{
+  "model": "profiles.employee",
+  "pk": 5,
+  "fields": {
+    "user": [
+      "admin"
+    ],
+    "first_name": "Carlos Enrique",
+    "last_name": "García Sánchez",
+    "email": "admin@example.com",
+    "phone": null,
+    "position": "",
+    "department": "",
+    "hire_date": "2026-03-02",
+    "is_active": true,
+    "photo": "employee_photos/employee/astronomer-972b1ddd.png",
+    "activation_token": null,
+    "activation_token_created": null,
+    "created_at": "2026-03-02T05:07:15.209Z",
+    "updated_at": "2026-03-02T05:13:07.161Z"
+  }
+},
+{
+  "model": "company.company",
+  "pk": 1,
+  "fields": {
+    "name": "Disitech",
+    "description": "Servicios de Ingeniería",
+    "email": "disitech@disitech.com",
+    "website": "https://disitech.com.mx/",
+    "logo": "company_logo/logo.png"
+  }
+}
+]

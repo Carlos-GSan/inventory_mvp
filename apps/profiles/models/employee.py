@@ -7,6 +7,13 @@ from django.contrib.auth.models import User
 from django.utils.crypto import get_random_string
 from django.utils import timezone
 from datetime import timedelta
+from apps.common.utils import generate_unique_filename
+
+
+def employee_photo_path(instance, filename):
+    """Genera ruta SEO-friendly para fotos de empleados."""
+    return generate_unique_filename(instance, filename, "employee_photos")
+
 
 class Employee(models.Model):
     """Empleado - puede o no tener acceso a plataforma"""
@@ -26,7 +33,11 @@ class Employee(models.Model):
     department = models.CharField(max_length=100)
     hire_date = models.DateField()
     is_active = models.BooleanField(default=True)
-    photo = models.ImageField(upload_to='employee_photos/', blank=True, null=True)
+    photo = models.ImageField(
+        upload_to=employee_photo_path,
+        blank=True,
+        null=True
+    )
     
     # Token de activación
     activation_token = models.CharField(max_length=100, blank=True, null=True)

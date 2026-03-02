@@ -1,14 +1,17 @@
 import os
 from django.conf import settings
+from apps.company.models.company import Company
 
 
 def logo_context(request):
-    """Agrega la URL del logo al contexto de todos los templates"""
-    logo_path = os.path.join(settings.MEDIA_ROOT, 'logo.png')
-    
-    if os.path.exists(logo_path):
-        logo_url = settings.MEDIA_URL + 'logo.png'
-    else:
+    """Agrega la URL del logo de la empresa al contexto de todos los templates"""
+    try:
+        company = Company.objects.first()
+        if company and company.logo:
+            logo_url = company.logo.url
+        else:
+            logo_url = None
+    except Exception:
         logo_url = None
-    
-    return {'logo_url': logo_url}
+
+    return {"logo_url": logo_url}
