@@ -205,6 +205,7 @@ DEFAULT_FROM_EMAIL = env("DEFAULT_FROM_EMAIL", default="no-reply@gmail.com")
 SUPPORT_INBOX = env("SUPPORT_INBOX", default="soporte@gmail.com")
 EMAIL_TIMEOUT = 20
 
+CSRF_TRUSTED_ORIGINS = env.list("CSRF_TRUSTED_ORIGINS", default=[])
 # Security settings for production
 if not DEBUG:
     SECURE_SSL_REDIRECT = env.bool("SECURE_SSL_REDIRECT", default=False)
