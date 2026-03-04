@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+
+{% block title %}Categorías - DisiTech{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row mb-4">
+        <div class="col-sm-6">
+            <h1 class="m-0">Categorías</h1>
+        </div>
+        <div class="col-sm-6">
+            <div class="float-sm-end">
+                {% if perms.inventory.add_category %}
+                <a href="{% url 'category_create' %}" class="btn btn-primary">
+                    <i class="bi bi-plus-circle"></i> Nueva Categoría
+                </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Lista de Categorías</h3>
+        </div>
+        <div class="card-body">
+            <form method="get" class="row g-3 mb-4" id="filter-form">
+                <div class="col-md-5">
+                    <label for="search" class="form-label">Buscar</label>
+                    <input
+                        type="text"
+                        class="form-control"
+                        id="search"
+                        name="search"
+                        placeholder="Nombre de la categoría..."
+                        value="{{ search }}"
+                        hx-get="{% url 'category_list' %}"
+                        hx-trigger="keyup changed delay:500ms"
+                        hx-target="#categories-container"
+                        hx-include="#filter-form input, #filter-form select"
+                    >
+                </div>
+                <div class="col-md-3">
+                    <label for="per_page" class="form-label">Mostrar</label>
+                    <select
+                        name="per_page"
+                        id="per_page"
+                        class="form-select"
+                        hx-get="{% url 'category_list' %}"
+                        hx-trigger="change"
+                        hx-target="#categories-container"
+                        hx-include="#filter-form input, #filter-form select"
+                    >
+                        <option value="10" {% if per_page == 10 %}selected{% endif %}>10</option>
+                        <option value="20" {% if per_page == 20 %}selected{% endif %}>20</option>
+                        <option value="45" {% if per_page == 45 %}selected{% endif %}>45</option>
+                    </select>
+                </div>
+                <div class="col-md-4 d-flex align-items-end">
+                    <a href="{% url 'category_list' %}" class="btn btn-secondary w-100">
+                        <i class="bi bi-x-circle"></i> Limpiar
+                    </a>
+                </div>
+            </form>
+
+            <div id="categories-container">
+                {% include 'categories/partials/categories_table.html' %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

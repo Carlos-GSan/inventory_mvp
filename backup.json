@@ -59,7 +59,7 @@
   "model": "auth.user",
   "fields": {
     "password": "pbkdf2_sha256$1200000$nFrqgrpz9n0lzY11gSCthr$yZ8OJBV9ijtq7ve7cdlkf4GzsFiHdJvy8/dqLrP8NVE=",
-    "last_login": "2026-03-02T05:45:23.183Z",
+    "last_login": "2026-03-04T06:36:10.198Z",
     "is_superuser": true,
     "username": "admin",
     "first_name": "Carlos Enrique",
@@ -165,49 +165,70 @@
   "model": "inventory.category",
   "pk": 1,
   "fields": {
-    "name": "láminas"
+    "name": "láminas",
+    "active": true,
+    "created_at": "2026-03-04T07:55:46.829Z",
+    "updated_at": "2026-03-04T07:55:46.838Z"
   }
 },
 {
   "model": "inventory.category",
   "pk": 2,
   "fields": {
-    "name": "angulos, perfiles y tubos"
+    "name": "angulos, perfiles y tubos",
+    "active": true,
+    "created_at": "2026-03-04T07:55:46.829Z",
+    "updated_at": "2026-03-04T07:55:46.838Z"
   }
 },
 {
   "model": "inventory.category",
   "pk": 3,
   "fields": {
-    "name": "tuberia conduit"
+    "name": "tuberia conduit",
+    "active": true,
+    "created_at": "2026-03-04T07:55:46.829Z",
+    "updated_at": "2026-03-04T07:55:46.838Z"
   }
 },
 {
   "model": "inventory.category",
   "pk": 4,
   "fields": {
-    "name": "herreria"
+    "name": "herreria",
+    "active": true,
+    "created_at": "2026-03-04T07:55:46.829Z",
+    "updated_at": "2026-03-04T07:55:46.838Z"
   }
 },
 {
   "model": "inventory.category",
   "pk": 5,
   "fields": {
-    "name": "pinturas"
+    "name": "pinturas",
+    "active": true,
+    "created_at": "2026-03-04T07:55:46.829Z",
+    "updated_at": "2026-03-04T07:55:46.838Z"
   }
 },
 {
   "model": "inventory.category",
   "pk": 6,
   "fields": {
-    "name": "equipo de seguridad"
+    "name": "equipo de seguridad",
+    "active": true,
+    "created_at": "2026-03-04T07:55:46.829Z",
+    "updated_at": "2026-03-04T07:55:46.838Z"
   }
 },
 {
   "model": "inventory.category",
   "pk": 7,
   "fields": {
-    "name": "pedacería"
+    "name": "pedacería",
+    "active": true,
+    "created_at": "2026-03-04T07:55:46.829Z",
+    "updated_at": "2026-03-04T07:55:46.838Z"
   }
 },
 {
@@ -330,7 +351,7 @@
     "slug": "pintura-anticorrosiva-rojo-oxido",
     "category": 5,
     "description": "Pintura anticorrosiva rojo óxido, cubeta 19L",
-    "stock": 26,
+    "stock": 29,
     "min_stock": 5,
     "max_stock": 40,
     "active": true
@@ -407,31 +428,74 @@
   }
 },
 {
+  "model": "inventory.itemphoto",
+  "pk": 1,
+  "fields": {
+    "item": 3,
+    "image": "item_photos/itemphoto/61f4hkyra2l-2bbaf2ae.jpg",
+    "caption": "",
+    "order": 0,
+    "created_at": "2026-03-04T08:22:51.359Z"
+  }
+},
+{
   "model": "inventory.supplier",
   "pk": 1,
   "fields": {
-    "name": "Aceros del Norte S.A. de C.V."
+    "name": "Aceros del Norte S.A. de C.V.",
+    "contact_name": "",
+    "phone": null,
+    "email": "",
+    "rfc": "",
+    "address": "",
+    "active": true,
+    "created_at": "2026-03-04T07:55:46.923Z",
+    "updated_at": "2026-03-04T07:55:46.935Z"
   }
 },
 {
   "model": "inventory.supplier",
   "pk": 2,
   "fields": {
-    "name": "Ferretería Industrial Gómez"
+    "name": "Ferretería Industrial Gómez",
+    "contact_name": "",
+    "phone": null,
+    "email": "",
+    "rfc": "",
+    "address": "",
+    "active": true,
+    "created_at": "2026-03-04T07:55:46.923Z",
+    "updated_at": "2026-03-04T07:55:46.935Z"
   }
 },
 {
   "model": "inventory.supplier",
   "pk": 3,
   "fields": {
-    "name": "Pinturas y Recubrimientos Profesionales"
+    "name": "Pinturas y Recubrimientos Profesionales",
+    "contact_name": "",
+    "phone": null,
+    "email": "",
+    "rfc": "",
+    "address": "",
+    "active": true,
+    "created_at": "2026-03-04T07:55:46.923Z",
+    "updated_at": "2026-03-04T07:55:46.935Z"
   }
 },
 {
   "model": "inventory.supplier",
   "pk": 4,
   "fields": {
-    "name": "Seguridad Industrial Mexicana"
+    "name": "Seguridad Industrial Mexicana",
+    "contact_name": "",
+    "phone": null,
+    "email": "",
+    "rfc": "",
+    "address": "",
+    "active": true,
+    "created_at": "2026-03-04T07:55:46.923Z",
+    "updated_at": "2026-03-04T07:55:46.935Z"
   }
 },
 {
@@ -532,6 +596,16 @@
     "purchased_at": "2025-12-21",
     "ref": "0ckhkyi",
     "created_at": "2025-12-21T19:26:48.863Z"
+  }
+},
+{
+  "model": "inventory.purchase",
+  "pk": 11,
+  "fields": {
+    "supplier": 4,
+    "purchased_at": "2026-03-04",
+    "ref": "0909080980709070970",
+    "created_at": "2026-03-04T07:00:03.942Z"
   }
 },
 {
@@ -702,6 +776,16 @@
     "item": 9,
     "qty": 20,
     "unit_price": "200.0000"
+  }
+},
+{
+  "model": "inventory.purchaseline",
+  "pk": 18,
+  "fields": {
+    "purchase": 11,
+    "item": 9,
+    "qty": 3,
+    "unit_price": "500.0000"
   }
 },
 {
@@ -1493,6 +1577,22 @@
     "happened_at": "2025-12-21T19:26:48.867Z",
     "note": "Compra #10",
     "created_at": "2025-12-21T19:26:48.868Z"
+  }
+},
+{
+  "model": "inventory.inventorytxn",
+  "pk": 36,
+  "fields": {
+    "item": 9,
+    "txn_type": "PURCHASE",
+    "qty": 3,
+    "unit_price": "500.0000",
+    "supplier": 4,
+    "purchase": 11,
+    "requisition": null,
+    "happened_at": "2026-03-04T07:00:03.972Z",
+    "note": "Compra #11",
+    "created_at": "2026-03-04T07:00:03.973Z"
   }
 },
 {

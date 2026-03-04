@@ -1,0 +1,112 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ title }} - DisiTech{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row mb-4">
+        <div class="col-sm-6">
+            <h1 class="m-0">{{ title }}</h1>
+        </div>
+        <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-end">
+                <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Inicio</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'supplier_list' %}">Proveedores</a></li>
+                <li class="breadcrumb-item active">{{ title }}</li>
+            </ol>
+        </div>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        <i class="bi bi-truck"></i> Información del Proveedor
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <form method="post" id="supplier-form">
+                        {% csrf_token %}
+
+                        <div class="mb-3">
+                            <label for="name" class="form-label">
+                                <i class="bi bi-building"></i> Nombre <span class="text-danger">*</span>
+                            </label>
+                            <input type="text" id="name" name="name" class="form-control"
+                                   value="{{ form.name.value|default:'' }}"
+                                   placeholder="Ej: Ferretería Central S.A. de C.V." required>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="contact_name" class="form-label">
+                                    <i class="bi bi-person"></i> Contacto Principal
+                                </label>
+                                <input type="text" id="contact_name" name="contact_name" class="form-control"
+                                       value="{{ form.contact_name.value|default:'' }}"
+                                       placeholder="Nombre del contacto">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="rfc" class="form-label">
+                                    <i class="bi bi-card-text"></i> RFC
+                                </label>
+                                <input type="text" id="rfc" name="rfc" class="form-control"
+                                       value="{{ form.rfc.value|default:'' }}"
+                                       placeholder="Ej: XAXX010101000" maxlength="13"
+                                       style="text-transform: uppercase;">
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="phone" class="form-label">
+                                    <i class="bi bi-telephone"></i> Teléfono
+                                </label>
+                                <input type="tel" id="phone" name="phone" class="form-control"
+                                       value="{{ form.phone.value|default:'' }}"
+                                       placeholder="Ej: +52 55 1234 5678">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="email" class="form-label">
+                                    <i class="bi bi-envelope"></i> Correo Electrónico
+                                </label>
+                                <input type="email" id="email" name="email" class="form-control"
+                                       value="{{ form.email.value|default:'' }}"
+                                       placeholder="contacto@proveedor.com">
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="address" class="form-label">
+                                <i class="bi bi-geo-alt"></i> Dirección
+                            </label>
+                            <textarea id="address" name="address" class="form-control" rows="2"
+                                      placeholder="Dirección completa del proveedor">{{ form.address.value|default:'' }}</textarea>
+                        </div>
+
+                        <div class="mb-4">
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="active" name="active"
+                                       {% if form.active.value or form.active.value == None %}checked{% endif %}>
+                                <label class="form-check-label" for="active">
+                                    <i class="bi bi-check-circle"></i> Proveedor Activo
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-save"></i> Guardar Proveedor
+                            </button>
+                            <a href="{% url 'supplier_list' %}" class="btn btn-secondary">
+                                <i class="bi bi-x-circle"></i> Cancelar
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

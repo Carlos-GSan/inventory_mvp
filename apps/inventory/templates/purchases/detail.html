@@ -10,7 +10,12 @@
                 <h1 class="m-0">Compra #{{ purchase.id }}</h1>
             </div>
             <div class="col-sm-6">
-                <div class="float-end">
+                <div class="float-end d-flex gap-2">
+                    {% if perms.inventory.change_purchase %}
+                    <a href="{% url 'purchase_update' purchase.pk %}" class="btn btn-warning">
+                        <i class="bi bi-pencil"></i> Editar
+                    </a>
+                    {% endif %}
                     <a href="{% url 'purchase_list' %}" class="btn btn-secondary">
                         <i class="bi bi-arrow-left"></i> Volver
                     </a>
@@ -91,6 +96,29 @@
                         </div>
                     </div>
                 </div>
+
+                {% if purchase.photos.all %}
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title"><i class="bi bi-camera"></i> Fotos de Ticket</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            {% for photo in purchase.photos.all %}
+                            <div class="col-md-3 mb-3">
+                                <a href="{{ photo.image.url }}" target="_blank">
+                                    <img src="{{ photo.image.url }}" class="img-fluid rounded shadow-sm"
+                                         alt="Ticket" style="max-height: 200px; object-fit: cover; width: 100%;">
+                                </a>
+                                {% if photo.caption %}
+                                <small class="text-muted d-block mt-1">{{ photo.caption }}</small>
+                                {% endif %}
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
             </div>
         </div>
     </div>

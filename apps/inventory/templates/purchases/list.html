@@ -1,0 +1,127 @@
+{% extends 'base.html' %}
+
+{% block title %}Compras - DisiTech{% endblock %}
+
+{% block content %}
+<div class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1 class="m-0">Compras</h1>
+            </div>
+            <div class="col-sm-6">
+                <div class="float-end">
+                    {% if perms.inventory.add_purchase %}
+                    <a href="{% url 'purchase_create' %}" class="btn btn-primary">
+                        <i class="bi bi-plus-circle"></i> Nueva Compra
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="content">
+    <div class="container-fluid">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Listado de Compras</h3>
+            </div>
+            <div class="card-body">
+                <!-- Filtros -->
+                <form id="filter-form" class="row g-3 mb-3">
+                    <div class="col-md-3">
+                        <label for="q" class="form-label">Búsqueda general</label>
+                        <input
+                            type="text"
+                            class="form-control"
+                            id="q"
+                            name="q"
+                            placeholder="Proveedor, referencia, producto..."
+                            value="{{ q }}"
+                            hx-get="{% url 'purchase_list' %}"
+                            hx-trigger="keyup changed delay:500ms"
+                            hx-target="#purchases-container"
+                            hx-include="#filter-form"
+                        >
+                    </div>
+                    <div class="col-md-2">
+                        <label for="supplier" class="form-label">Proveedor</label>
+                        <select
+                            class="form-select"
+                            id="supplier"
+                            name="supplier"
+                            hx-get="{% url 'purchase_list' %}"
+                            hx-trigger="change"
+                            hx-target="#purchases-container"
+                            hx-include="#filter-form"
+                        >
+                            <option value="">Todos</option>
+                            {% for supplier in suppliers %}
+                            <option value="{{ supplier.id }}" {% if supplier_id|stringformat:"s" == supplier.id|stringformat:"s" %}selected{% endif %}>
+                                {{ supplier.name }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <label for="date_from" class="form-label">Desde</label>
+                        <input
+                            type="date"
+                            class="form-control"
+                            id="date_from"
+                            name="date_from"
+                            value="{{ date_from }}"
+                            hx-get="{% url 'purchase_list' %}"
+                            hx-trigger="change"
+                            hx-target="#purchases-container"
+                            hx-include="#filter-form"
+                        >
+                    </div>
+                    <div class="col-md-2">
+                        <label for="date_to" class="form-label">Hasta</label>
+                        <input
+                            type="date"
+                            class="form-control"
+                            id="date_to"
+                            name="date_to"
+                            value="{{ date_to }}"
+                            hx-get="{% url 'purchase_list' %}"
+                            hx-trigger="change"
+                            hx-target="#purchases-container"
+                            hx-include="#filter-form"
+                        >
+                    </div>
+                    <div class="col-md-1">
+                        <label for="per_page" class="form-label">Ver</label>
+                        <select
+                            class="form-select"
+                            id="per_page"
+                            name="per_page"
+                            hx-get="{% url 'purchase_list' %}"
+                            hx-trigger="change"
+                            hx-target="#purchases-container"
+                            hx-include="#filter-form"
+                        >
+                            <option value="10" {% if per_page == 10 %}selected{% endif %}>10</option>
+                            <option value="20" {% if per_page == 20 %}selected{% endif %}>20</option>
+                            <option value="45" {% if per_page == 45 %}selected{% endif %}>45</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2 d-flex align-items-end">
+                        <a href="{% url 'purchase_list' %}" class="btn btn-secondary w-100">
+                            <i class="bi bi-x-circle"></i> Limpiar
+                        </a>
+                    </div>
+                </form>
+
+                <!-- Tabla con HTMX -->
+                <div id="purchases-container">
+                    {% include 'purchases/partials/purchases_table.html' %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

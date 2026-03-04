@@ -1,0 +1,258 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ title }} - DisiTech{% endblock %}
+
+{% block content %}
+<div class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1 class="m-0">{{ title }}</h1>
+            </div>
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-end">
+                    <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Dashboard</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'purchase_list' %}">Compras</a></li>
+                    <li class="breadcrumb-item active">Editar</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="content">
+    <div class="container-fluid">
+        <form method="post" id="purchaseForm" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <div class="row">
+                <div class="col-md-12">
+                    <!-- Información General -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title"><i class="bi bi-info-circle"></i> Información General</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="supplier" class="form-label">Proveedor <span class="text-danger">*</span></label>
+                                        <select id="supplier" name="supplier" class="form-select" required>
+                                            <option value="">Seleccione un proveedor</option>
+                                            {% for supplier in suppliers %}
+                                            <option value="{{ supplier.id }}" {% if purchase.supplier_id == supplier.id %}selected{% endif %}>
+                                                {{ supplier.name }}
+                                            </option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="purchased_at" class="form-label">Fecha de Compra <span class="text-danger">*</span></label>
+                                        <input type="date" id="purchased_at" name="purchased_at" class="form-control"
+                                               value="{{ purchase.purchased_at|date:'Y-m-d' }}" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="mb-3">
+                                        <label for="ref" class="form-label">Referencia (Factura/OC)</label>
+                                        <input type="text" id="ref" name="ref" class="form-control"
+                                               value="{{ purchase.ref|default:'' }}"
+                                               placeholder="Número de factura u orden de compra">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Líneas de Compra -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title"><i class="bi bi-cart"></i> Líneas de Compra</h3>
+                        </div>
+                        <div class="card-body">
+                            <div id="purchaseLines">
+                                <!-- Las líneas se cargan desde JS -->
+                            </div>
+
+                            <button type="button" id="addLine" class="btn btn-secondary">
+                                <i class="bi bi-plus-circle"></i> Agregar Línea
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Fotos de Ticket -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title"><i class="bi bi-camera"></i> Fotos de Ticket</h3>
+                        </div>
+                        <div class="card-body">
+                            {% if photos %}
+                            <div class="row mb-3" id="existing-photos">
+                                {% for photo in photos %}
+                                <div class="col-md-3 mb-3" id="photo-{{ photo.id }}">
+                                    <div class="card h-100">
+                                        <img src="{{ photo.image.url }}" class="card-img-top" alt="Foto ticket"
+                                             style="max-height: 200px; object-fit: cover; cursor: pointer;"
+                                             onclick="window.open(this.src, '_blank')">
+                                        <div class="card-body p-2 text-center">
+                                            <button type="button" class="btn btn-sm btn-danger delete-photo"
+                                                    data-photo-id="{{ photo.id }}">
+                                                <i class="bi bi-trash"></i> Eliminar
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+
+                            <div data-camera-widget="photos"></div>
+                        </div>
+                    </div>
+
+                    <!-- Acciones -->
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="d-flex gap-2">
+                                <button type="submit" class="btn btn-success">
+                                    <i class="bi bi-check-circle"></i> Guardar Cambios
+                                </button>
+                                <a href="{% url 'purchase_detail' purchase.pk %}" class="btn btn-secondary">
+                                    <i class="bi bi-x-circle"></i> Cancelar
+                                </a>
+                                {% if perms.inventory.delete_purchase %}
+                                <button type="button" class="btn btn-danger ms-auto" id="btn-delete-purchase">
+                                    <i class="bi bi-trash"></i> Eliminar Compra
+                                </button>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+
+        <!-- Formulario oculto de eliminación -->
+        {% if perms.inventory.delete_purchase %}
+        <form id="delete-purchase-form" method="post" action="{% url 'purchase_delete' purchase.pk %}" style="display:none;">
+            {% csrf_token %}
+        </form>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Datos de items y líneas existentes para JS -->
+<script id="items-data" type="application/json">
+[{% for item in items %}{"id":{{ item.id }},"text":"{{ item.sku }} - {{ item.description }}"}{% if not forloop.last %},{% endif %}{% endfor %}]
+</script>
+<script id="lines-data" type="application/json">
+{{ existing_lines|safe }}
+</script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const itemsData = JSON.parse(document.getElementById('items-data').textContent);
+    const existingLines = JSON.parse(document.getElementById('lines-data').textContent);
+    const container = document.getElementById('purchaseLines');
+    let lineIndex = 0;
+
+    function buildOptions(selectedId) {
+        let html = '<option value="">Seleccione un producto</option>';
+        itemsData.forEach(function(item) {
+            const sel = (item.id == selectedId) ? 'selected' : '';
+            html += '<option value="' + item.id + '" ' + sel + '>' + item.text + '</option>';
+        });
+        return html;
+    }
+
+    function addLine(data) {
+        const idx = lineIndex;
+        const div = document.createElement('div');
+        div.className = 'purchase-line mb-3 p-3 bg-light rounded';
+        div.innerHTML =
+            '<div class="row">' +
+                '<div class="col-md-5"><div class="mb-3 mb-md-0">' +
+                    '<label class="form-label">Producto <span class="text-danger">*</span></label>' +
+                    '<select name="lines[' + idx + '][item]" class="form-select" required>' +
+                        buildOptions(data ? data.item_id : '') +
+                    '</select>' +
+                '</div></div>' +
+                '<div class="col-md-3"><div class="mb-3 mb-md-0">' +
+                    '<label class="form-label">Cantidad <span class="text-danger">*</span></label>' +
+                    '<input type="number" name="lines[' + idx + '][qty]" class="form-control" min="1" value="' + (data ? data.qty : '') + '" required>' +
+                '</div></div>' +
+                '<div class="col-md-3"><div class="mb-3 mb-md-0">' +
+                    '<label class="form-label">Precio Unit. <span class="text-danger">*</span></label>' +
+                    '<input type="number" name="lines[' + idx + '][unit_price]" class="form-control" step="0.01" min="0" value="' + (data ? data.unit_price : '') + '" required>' +
+                '</div></div>' +
+                '<div class="col-md-1 d-flex align-items-end">' +
+                    '<button type="button" class="btn btn-danger btn-sm w-100 remove-line"><i class="bi bi-trash"></i></button>' +
+                '</div>' +
+            '</div>';
+        container.appendChild(div);
+        lineIndex++;
+        updateRemoveButtons();
+    }
+
+    // Cargar líneas existentes
+    if (existingLines.length > 0) {
+        existingLines.forEach(function(l) { addLine(l); });
+    } else {
+        addLine(null);
+    }
+
+    document.getElementById('addLine').addEventListener('click', function() {
+        addLine(null);
+    });
+
+    container.addEventListener('click', function(e) {
+        const btn = e.target.classList.contains('remove-line') ? e.target : e.target.closest('.remove-line');
+        if (btn) {
+            btn.closest('.purchase-line').remove();
+            updateRemoveButtons();
+        }
+    });
+
+    function updateRemoveButtons() {
+        const lines = document.querySelectorAll('.purchase-line');
+        lines.forEach(function(line) {
+            const btn = line.querySelector('.remove-line');
+            btn.style.visibility = lines.length === 1 ? 'hidden' : 'visible';
+        });
+    }
+
+    // Eliminar foto existente
+    document.querySelectorAll('.delete-photo').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+            const photoId = this.dataset.photoId;
+            if (!confirm('¿Eliminar esta foto?')) return;
+            fetch('{% url "purchase_photo_delete" 0 %}'.replace('0', photoId), {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}',
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            }).then(function(r) {
+                if (r.ok) {
+                    document.getElementById('photo-' + photoId).remove();
+                }
+            });
+        });
+    });
+
+    // Confirmar eliminación de compra
+    const deleteBtn = document.getElementById('btn-delete-purchase');
+    if (deleteBtn) {
+        deleteBtn.addEventListener('click', function() {
+            if (confirm('¿Eliminar esta compra? Se revertirá todo el stock asociado. Esta acción no se puede deshacer.')) {
+                document.getElementById('delete-purchase-form').submit();
+            }
+        });
+    }
+});
+</script>
+<script src="{% static 'js/common/camera_capture.js' %}"></script>
+{% endblock %}

@@ -7,6 +7,7 @@
                 <th>
                     <input type="checkbox" id="select-all" title="Seleccionar todos">
                 </th>
+                <th style="width:60px;">Foto</th>
                 <th>SKU</th>
                 <th>Descripción</th>
                 <th>Categoría</th>
@@ -21,6 +22,17 @@
             <tr>
                 <td>
                     <input type="checkbox" class="item-checkbox" value="{{ item.pk }}" data-sku="{{ item.sku }}">
+                </td>
+                <td>
+                    {% with first_photo=item.photos.all.0 %}
+                    {% if first_photo %}
+                    <img src="{{ first_photo.image.url }}" alt="{{ item.description }}"
+                         class="rounded" style="width:40px;height:40px;object-fit:cover;cursor:pointer;"
+                         onclick="window.open(this.src,'_blank')">
+                    {% else %}
+                    <span class="text-muted" style="font-size:1.5rem;"><i class="bi bi-image"></i></span>
+                    {% endif %}
+                    {% endwith %}
                 </td>
                 <td><strong>{{ item.sku }}</strong></td>
                 <td>{{ item.description }}</td>

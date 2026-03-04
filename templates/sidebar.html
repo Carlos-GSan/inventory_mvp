@@ -74,6 +74,28 @@
         {% endif %}
         <!--end::Inventario-->
 
+        <!--begin::Categorías-->
+        {% if perms.inventory.view_category %}
+        <li class="nav-item">
+          <a href="{% url 'category_list' %}" class="nav-link">
+            <i class="nav-icon bi bi-tags"></i>
+            <p>Categorías</p>
+          </a>
+        </li>
+        {% endif %}
+        <!--end::Categorías-->
+
+        <!--begin::Proveedores-->
+        {% if perms.inventory.view_supplier %}
+        <li class="nav-item">
+          <a href="{% url 'supplier_list' %}" class="nav-link">
+            <i class="nav-icon bi bi-truck"></i>
+            <p>Proveedores</p>
+          </a>
+        </li>
+        {% endif %}
+        <!--end::Proveedores-->
+
         <!--begin::Compras-->
         {% if perms.inventory.view_purchase %}
         <li class="nav-item">

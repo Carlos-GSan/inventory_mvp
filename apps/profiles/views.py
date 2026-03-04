@@ -175,7 +175,7 @@ def employee_list(request):
     
     # Si es petición HTMX, devolver solo la tabla
     if request.headers.get('HX-Request'):
-        return render(request, 'partials/employees_table.html', context)
+        return render(request, 'profiles/partials/employees_table.html', context)
     
     return render(request, 'profiles/employee_list.html', context)
 

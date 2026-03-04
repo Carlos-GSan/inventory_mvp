@@ -21,9 +21,23 @@
                     <strong>${{ purchase.total|floatformat:2 }}</strong>
                 </td>
                 <td class="text-center">
-                    <a href="{% url 'purchase_detail' purchase.pk %}" class="btn btn-sm btn-primary">
-                        <i class="bi bi-eye"></i> Ver
+                    <a href="{% url 'purchase_detail' purchase.pk %}" class="btn btn-sm btn-primary" title="Ver">
+                        <i class="bi bi-eye"></i>
                     </a>
+                    {% if perms.inventory.change_purchase %}
+                    <a href="{% url 'purchase_update' purchase.pk %}" class="btn btn-sm btn-warning" title="Editar">
+                        <i class="bi bi-pencil"></i>
+                    </a>
+                    {% endif %}
+                    {% if perms.inventory.delete_purchase %}
+                    <button type="button" class="btn btn-sm btn-danger" title="Eliminar"
+                            onclick="if(confirm('¿Eliminar compra #{{ purchase.id }}? Se revertirá el stock.')) { document.getElementById('delete-form-{{ purchase.id }}').submit(); }">
+                        <i class="bi bi-trash"></i>
+                    </button>
+                    <form id="delete-form-{{ purchase.id }}" method="post" action="{% url 'purchase_delete' purchase.pk %}" style="display:none;">
+                        {% csrf_token %}
+                    </form>
+                    {% endif %}
                 </td>
             </tr>
             {% empty %}

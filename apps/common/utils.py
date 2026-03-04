@@ -5,7 +5,46 @@ import os
 import re
 import uuid
 from pathlib import Path
-from unicodedata import normalize
+from unicodedata import normalize, category as unicode_category
+
+
+def normalize_name(value: str) -> str:
+    """
+    Normaliza un nombre para comparaciones case-insensitive y sin acentos.
+
+    Convierte a minúsculas, elimina acentos/diacríticos y colapsa
+    espacios múltiples en uno solo.
+
+    Esto permite tratar "Herramienta", "herramienta", "HERRAMIENTA"
+    y "herramientá" como equivalentes.
+
+    Args:
+        value: Texto a normalizar.
+
+    Returns:
+        Texto normalizado listo para comparación.
+
+    Examples:
+        >>> normalize_name("Herramienta")
+        'herramienta'
+        >>> normalize_name("HERRAMIENTA")
+        'herramienta'
+        >>> normalize_name("  Tornillo   Galvanizado  ")
+        'tornillo galvanizado'
+        >>> normalize_name("Válvula de Presión")
+        'valvula de presion'
+    """
+    if not value:
+        return ""
+    # Descomponer unicode (NFD) para separar caracteres base de diacríticos
+    decomposed = normalize('NFD', value)
+    # Filtrar marcas diacríticas (categoría unicode 'Mn' = Mark, Nonspacing)
+    stripped = ''.join(c for c in decomposed if unicode_category(c) != 'Mn')
+    # Minúsculas
+    lowered = stripped.lower()
+    # Colapsar espacios múltiples y strip
+    cleaned = re.sub(r'\s+', ' ', lowered).strip()
+    return cleaned
 
 
 def slugify_filename(filename: str) -> str:

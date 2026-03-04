@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block title %}Nueva Compra - DisiTech{% endblock %}
 
@@ -22,7 +23,7 @@
 
 <div class="content">
     <div class="container-fluid">
-        <form method="post" id="purchaseForm">
+        <form method="post" id="purchaseForm" enctype="multipart/form-data">
             {% csrf_token %}
             
             <div class="row">
@@ -103,6 +104,15 @@
                             <button type="button" id="addLine" class="btn btn-secondary">
                                 <i class="bi bi-plus-circle"></i> Agregar Línea
                             </button>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title"><i class="bi bi-camera"></i> Fotos de Ticket</h3>
+                        </div>
+                        <div class="card-body">
+                            <div data-camera-widget="photos"></div>
                         </div>
                     </div>
 
@@ -191,4 +201,5 @@ function updateRemoveButtons() {
 // Set today as default date
 document.getElementById('purchased_at').valueAsDate = new Date();
 </script>
+<script src="{% static 'js/common/camera_capture.js' %}"></script>
 {% endblock %}
